@@ -1,0 +1,434 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Evolution of Terrorism</title>
+	<meta name="description" content="Scrollama: Sticky Side Example">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel='stylesheet' href='style.css'>
+	<style>
+		#scrolly {
+			position: relative;
+			display: -webkit-box;
+			display: -ms-flexbox;
+			display: flex;
+			background-color: #f3f3f3;
+			padding: 1rem;
+		}
+
+		#scrolly > * {
+			-webkit-box-flex: 1;
+			-ms-flex: 1;
+			flex: 1;
+		}
+
+
+		article {
+			position: relative;
+			padding: 0 1rem;
+			max-width: 20rem;
+		}
+
+		figure {
+			position: -webkit-sticky;
+			position: sticky;
+			width: 100%;
+			margin: 0;
+			-webkit-transform: translate3d(0, 0, 0);
+			-moz-transform: translate3d(0, 0, 0);
+			transform: translate3d(0, 0, 0);
+			background-color: #8a8a8a;
+		}
+
+		figure p {
+			text-align: center;
+			padding: 1rem;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			-moz-transform: translate(-50%, -50%);
+			-webkit-transform: translate(-50%, -50%);
+			transform: translate(-50%, -50%);
+			font-size: 8rem;
+			font-weight: 900;
+			color: #fff;
+		}
+
+
+		.step {
+			margin: 0 auto 2rem auto;
+			background-color: #3b3b3b;
+			color: #fff;
+		}
+
+		.step:last-child {
+			margin-bottom: 0;
+		}
+
+		.step.is-active {
+			background-color: goldenrod;
+			color: #3b3b3b;
+		}
+
+		.step p {
+			text-align: center;
+			padding: 1rem;
+			font-size: 1.5rem;
+		}
+	</style>
+
+</head>
+
+<body>
+	<main>
+		<section id='intro'>
+			<h1 class='intro__hed'>Sticky Side Example</h1>
+			<p class='intro__dek'>
+				Start scrolling to see how it works.
+			</p>
+		</section>
+
+		<section id='scrolly'>
+			
+			<article>
+				<div class='step' data-step='1'>
+					<p>STEP 1</p>
+				</div>
+				<div class='step' data-step='2'>
+					<p>STEP 2</p>
+				</div>
+				<div class='step' data-step='3'>
+					<p>STEP 3</p>
+				</div>
+				<div class='step' data-step='4'>
+					<p>STEP 4</p>
+				</div>
+			</article>
+
+			<figure>
+				<p>0</p>
+			</figure>
+		</section>
+
+
+		<section id='outro'></section>
+	</main>
+	
+	<!-- <div class='debug'></div> -->
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+	<script src='https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js'></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/stickyfill/2.1.0/stickyfill.min.js'></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/scrollama/2.0.0/scrollama.min.js"></script>
+	<script>
+		function processcsv(features){
+			var colorfill = []
+			d3.csv("https://gist.githubusercontent.com/haoshuai999/fcc38f23dba68f889cf7fc34c131d6c4/raw/a4386edebb78019c7e98ae2ae32ca506920d2566/nkills.csv", function(killdata) {
+				for (var i = 0; i < features.length; i++) {
+					for (var j = 0; j < killdata.length; j++) {
+						if(features[i].properties.labelrank==killdata[j].country){
+							if(parseInt(killdata[j].nkill) > 1300 ){
+								colorfill[i]="#a70000"
+							}
+							else if(parseInt(killdata[j].nkill) > 900 && parseInt(killdata[j].nkill) <= 1300){
+								colorfill[i]="#ff0000"
+							}
+							else if(parseInt(killdata[j].nkill) > 400 && parseInt(killdata[j].nkill) <= 900){
+								colorfill[i]="#ff5252"
+							}
+							else if(parseInt(killdata[j].nkill) > 200 && parseInt(killdata[j].nkill) <= 400){
+								colorfill[i]="#ff7b7b"
+							}
+							else if(parseInt(killdata[j].nkill) >= 0 && parseInt(killdata[j].nkill) <= 200){
+								colorfill[i]="#ffbaba"
+							}
+						}
+					}
+				}
+			})
+			return colorfill
+		};
+		function worldmap(){
+			var width = 1260,
+				  height = 600,
+				  centered;
+
+			var svg = d3.select("#intro").append("svg")
+			  .attr("width", width)
+			  .attr("height", height);
+
+			// Add background
+			svg.append('rect')
+			  .style("fill", "#fff")
+			  .attr('width', width)
+			  .attr('height', height);
+
+			var g = svg.append('g');
+
+			var xym = d3.geo.mercator()
+								.center([10,41])
+								.scale(150)
+								.translate([width/2, height/2]);
+			var path = d3.geo.path().projection(xym);
+
+			// Customize the projection to make the center of Thailand become the center of the map
+
+
+
+			d3.json("https://gist.githubusercontent.com/haoshuai999/6648576cf22f9696805bd0436c6bd0fe/raw/0a9598b48a4314b2e53b29e0e434c14dc993c235/worldrough.geo.json", function(data) {
+				var colors = processcsv(data.features)
+				//var colors = ['blue', 'red', 'orange', 'yellow', 'black'];
+				setTimeout(function(){
+					g.selectAll("path").data(data.features)
+					.enter().append("path")
+					.attr("d", path)
+					.attr('vector-effect', 'non-scaling-stroke')
+					.attr("fill", function(d,i) {
+						return colors[i]
+					})
+				}, 1500)
+			  
+			});
+			  // // Zoom
+			  // g.transition()
+			  //   .duration(750)
+			  //   .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')scale(' + k + ')translate(' + -x + ',' + -y + ')');
+
+		}
+		function showdotchart(){
+			//dot
+			var width = 800,
+				height = 500;
+
+			var nodes1 = [];
+			var nodes2 = [];
+
+			var color1 = '#00FF00';
+			var color2 = '#FF0000';
+
+			var svg = d3.select("figure").append("svg")
+				.attr("width", width)
+				.attr("height", height);
+
+			var force = d3.layout.force()
+				.charge(-20)
+				.size([width, height])
+				.nodes(nodes1)
+				.on("tick", tick)
+				.start();
+
+			var force2 = d3.layout.force()
+				.charge(-20)
+				.size([width, height])
+				.nodes(nodes2)
+				.on("tick", tick)
+				.start();
+
+			function tick() {
+			  svg.selectAll(".class1")
+				  .attr("cx", function(data1) { return data1.x - 100; })
+				  .attr("cy", function(data1) { return data1.y - 100; });
+			  svg.selectAll(".class2")
+				  .attr("cx", function(data2) { return data2.x + 200; })
+				  .attr("cy", function(data2) { return data2.y - 100; });
+			}
+
+			var interval = setInterval(function() {
+			  var data1 = {
+				x: width / 2 + 2 * Math.random() - 1,
+				y: height / 2 + 2 * Math.random() - 1
+			  };
+			  var data2 = {
+				x: width / 2 + 2 * Math.random() - 1,
+				y: height / 2 + 2 * Math.random() - 1
+			  };
+
+			  svg.append("circle")
+				  .data([data1])
+				  .attr("r", 1e-6)
+				  .attr('class', 'class1')
+				.transition()
+				  .ease(Math.sqrt)
+				  .attr("r", 4.5);
+
+			  svg.append("circle")
+				  .data([data2])
+				  .attr("r", 1e-6)
+				  .attr('class', 'class2')
+				.transition()
+				  .ease(Math.sqrt)
+				  .attr("r", 4.5);
+
+			  svg.selectAll('.class1')
+				.attr('fill', color1)
+
+			  svg.selectAll('.class2')
+				.attr('fill', color2)
+
+			  if (nodes1.push(data1) > 100) clearInterval(interval);
+			  if (nodes2.push(data2) > 100) clearInterval(interval);
+			  force.start();
+			  force2.start();
+			}, 1);
+		}
+		
+
+		function showbarchart(){
+			//bar chart
+			var margin = {top: 20, right: 20, bottom: 70, left: 40},
+				width2 = 600 - margin.left - margin.right,
+				height2 = 300 - margin.top - margin.bottom;
+
+			// Parse the date / time
+			var	parseDate = d3.time.format("%Y-%m").parse;
+
+			var x = d3.scale.ordinal().rangeRoundBands([0, width2], .05);
+
+			var y = d3.scale.linear().range([height2, 0]);
+
+			var xAxis = d3.svg.axis()
+				.scale(x)
+				.orient("bottom")
+				.tickFormat(d3.time.format("%Y-%m"));
+
+			var yAxis = d3.svg.axis()
+				.scale(y)
+				.orient("left")
+				.ticks(10);
+			
+			var svg = d3.select("figure").append("svg")
+			.attr("width", width2 + margin.left + margin.right)
+			.attr("height", height2 + margin.top + margin.bottom)
+			.append("g")
+			.attr("transform", 
+				  "translate(" + margin.left + "," + margin.top + ")");
+
+			d3.csv("https://gist.githubusercontent.com/haoshuai999/5460519f08584be37c8c40de5bb3f4cd/raw/e533683168c3e2a31ca18a2939023eb8d0879c3c/bardata.csv", function(error, data) {
+
+				data.forEach(function(d) {
+					d.date = parseDate(d.date);
+					d.value = +d.value;
+				});
+				
+			  x.domain(data.map(function(d) { return d.date; }));
+			  y.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+			  svg.append("g")
+				  .attr("class", "x axis")
+				  .attr("transform", "translate(0," + height2 + ")")
+				  .call(xAxis)
+				.selectAll("text")
+				  .style("text-anchor", "end")
+				  .attr("dx", "-.8em")
+				  .attr("dy", "-.55em")
+				  .attr("transform", "rotate(-90)" );
+
+			  svg.append("g")
+				  .attr("class", "y axis")
+				  .call(yAxis)
+				.append("text")
+				  .attr("transform", "rotate(-90)")
+				  .attr("y", 6)
+				  .attr("dy", ".71em")
+				  .style("text-anchor", "end")
+				  .text("Value ($)");
+
+			  svg.selectAll("bar")
+				  .data(data)
+				.enter().append("rect")
+				  .style("fill", "steelblue")
+				  .attr("x", function(d) { return x(d.date); })
+				  .attr("width", x.rangeBand())
+				  .attr("y", function(d) { return y(d.value); })
+				  .attr("height", function(d) { return height2 - y(d.value); });
+
+			});
+		}
+
+		// using d3 for convenience
+		var main = d3.select('main')
+		var scrolly = main.select('#scrolly');
+		var figure = scrolly.select('figure');
+		var article = scrolly.select('article');
+		var step = article.selectAll('.step');
+
+		// initialize the scrollama
+		var scroller = scrollama();
+
+		// generic window resize listener event
+		function handleResize() {
+			// 1. update height of step elements
+			var stepH = Math.floor(window.innerHeight * 0.75);
+			step.style('height', stepH + 'px');
+
+			var figureHeight = window.innerHeight / 2
+			var figureMarginTop = (window.innerHeight - figureHeight) / 2  
+
+			figure
+				.style('height', figureHeight + 'px')
+				.style('top', figureMarginTop + 'px');
+
+			// 3. tell scrollama to update new element dimensions
+			scroller.resize();
+		}
+
+		// scrollama event handlers
+		function handleStepEnter(response) {
+			console.log(response)
+			// response = { element, direction, index }
+			// add color to current step only
+			step.classed('is-active', function (d, i) {
+				return i === response.index;
+			})
+
+			// update graphic based on step
+			figure.select('p').text(response.index);
+
+			if (response.direction == 'down' && response.index > 1) {
+				d3.select('figure svg').remove();
+				showbarchart();
+			}
+			else if (response.direction == 'up' && response.index <= 1){
+				d3.select('figure svg').remove();
+				showdotchart();
+			}
+
+		}
+
+		function setupStickyfill() {
+			d3.selectAll('.sticky').each(function () {
+				Stickyfill.add(this);
+			});
+		}
+
+		function init() {
+			setupStickyfill();
+
+			// 1. force a resize on load to ensure proper dimensions are sent to scrollama
+			handleResize();
+
+			// 2. setup the scroller passing options
+			// 		this will also initialize trigger observations
+			// 3. bind scrollama event handlers (this can be chained like below)
+			scroller.setup({
+				step: '#scrolly article .step',
+				offset: 0.33,
+				debug: true,
+			})
+				.onStepEnter(handleStepEnter)
+
+
+			// setup resize event
+			window.addEventListener('resize', handleResize);
+			worldmap()
+			showdotchart();
+		}
+
+		// kick things off
+		init();
+	</script>
+</body>
+
+</html>

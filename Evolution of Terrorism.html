@@ -1,6 +1,4 @@
-
 <!DOCTYPE html>
-<html>
 
 <head>
 	<meta charset="utf-8">
@@ -14,7 +12,7 @@
 			position: relative;
 			display: -webkit-box;
 			display: -ms-flexbox;
-			display: flex;
+			display: inline-block;
 			background-color: #f3f3f3;
 			padding: 1rem;
 		}
@@ -24,12 +22,21 @@
 			-ms-flex: 1;
 			flex: 1;
 		}
-
+/*		.firstscroll{
+			display: inline-block;
+		}
+		.secondscroll{
+			display: inline-block;
+		}*/
 
 		article {
 			position: relative;
 			padding: 0 1rem;
 			max-width: 20rem;
+		}
+
+		.first, .second{
+			display: flex;
 		}
 
 		figure {
@@ -92,25 +99,45 @@
 		</section>
 
 		<section id='scrolly'>
-			
-			<article>
-				<div class='step' data-step='1'>
-					<p>STEP 1</p>
-				</div>
-				<div class='step' data-step='2'>
-					<p>STEP 2</p>
-				</div>
-				<div class='step' data-step='3'>
-					<p>STEP 3</p>
-				</div>
-				<div class='step' data-step='4'>
-					<p>STEP 4</p>
-				</div>
-			</article>
+			<div class="first">
+				<article class="scroll1">
+					<div class='step' data-step='1'>
+						<p>STEP 1</p>
+					</div>
+					<div class='step' data-step='2'>
+						<p>STEP 2</p>
+					</div>
+					<div class='step' data-step='3'>
+						<p>STEP 3</p>
+					</div>
+					<div class='step' data-step='4'>
+						<p>STEP 4</p>
+					</div>
+				</article>
+				<figure class="sticky1">
+					<p>0</p>
+				</figure>
+			</div>
+			<div class="second">
+				<figure class="sticky2">
+					<p>0</p>
+				</figure>
+				<article class="scroll2">
+					<div class='step' data-step='5'>
+						<p>STEP 5</p>
+					</div>
+					<div class='step' data-step='6'>
+						<p>STEP 6</p>
+					</div>
+					<div class='step' data-step='7'>
+						<p>STEP 7</p>
+					</div>
+					<div class='step' data-step='8'>
+						<p>STEP 8</p>
+					</div>
+				</article>
+			</div>
 
-			<figure>
-				<p>0</p>
-			</figure>
 		</section>
 
 
@@ -155,7 +182,7 @@
 				  height = 600,
 				  centered;
 
-			var svg = d3.select("#intro").append("svg")
+			var svg = d3.select(".sticky1").append("svg")
 			  .attr("width", width)
 			  .attr("height", height);
 
@@ -208,7 +235,7 @@
 			var color1 = '#00FF00';
 			var color2 = '#FF0000';
 
-			var svg = d3.select("figure").append("svg")
+			var svg = d3.select(".sticky2").append("svg")
 				.attr("width", width)
 				.attr("height", height);
 
@@ -298,7 +325,7 @@
 				.orient("left")
 				.ticks(10);
 			
-			var svg = d3.select("figure").append("svg")
+			var svg = d3.select(".sticky2").append("svg")
 			.attr("width", width2 + margin.left + margin.right)
 			.attr("height", height2 + margin.top + margin.bottom)
 			.append("g")
@@ -350,9 +377,13 @@
 		// using d3 for convenience
 		var main = d3.select('main')
 		var scrolly = main.select('#scrolly');
-		var figure = scrolly.select('figure');
-		var article = scrolly.select('article');
-		var step = article.selectAll('.step');
+		var figure1 = scrolly.select('.sticky1');
+		var figure2 = scrolly.select('.sticky2');
+		var article1 = scrolly.select('.scroll1');
+		var article2 = scrolly.select('.scroll2');
+		var step1 = article1.selectAll('.step');
+		var step2 = article2.selectAll('.step');
+		var step = scrolly.selectAll('.step');
 
 		// initialize the scrollama
 		var scroller = scrollama();
@@ -360,13 +391,23 @@
 		// generic window resize listener event
 		function handleResize() {
 			// 1. update height of step elements
-			var stepH = Math.floor(window.innerHeight * 0.75);
-			step.style('height', stepH + 'px');
+			var scrollyWidth = window.innerWidth * 0.98
 
-			var figureHeight = window.innerHeight / 2
+			scrolly
+				.style('width', scrollyWidth + 'px')
+
+			var stepH = Math.floor(window.innerHeight * 0.75);
+			step1.style('height', stepH + 'px');
+			step2.style('height', stepH + 'px');
+
+			var figureHeight = window.innerHeight / 1.5
 			var figureMarginTop = (window.innerHeight - figureHeight) / 2  
 
-			figure
+			figure1
+				.style('height', figureHeight + 'px')
+				.style('top', figureMarginTop + 'px');
+
+			figure2
 				.style('height', figureHeight + 'px')
 				.style('top', figureMarginTop + 'px');
 
@@ -382,17 +423,21 @@
 			step.classed('is-active', function (d, i) {
 				return i === response.index;
 			})
+			// step2.classed('is-active', function (d, i) {
+			// 	return i === response.index;
+			// })
 
 			// update graphic based on step
-			figure.select('p').text(response.index);
+			figure1.select('p').text(response.index);
+			figure2.select('p').text(response.index);
 
-			if (response.direction == 'down' && response.index > 1) {
-				d3.select('figure svg').remove();
-				showbarchart();
-			}
-			else if (response.direction == 'up' && response.index <= 1){
-				d3.select('figure svg').remove();
+			if (response.direction == 'up' && response.index <= 5){
+				d3.select('.sticky2 svg').remove();
 				showdotchart();
+			}
+			else if (response.direction == 'down' && response.index > 5 ) {
+				d3.select('.sticky2 svg').remove();
+				showbarchart();
 			}
 
 		}
@@ -419,10 +464,9 @@
 			})
 				.onStepEnter(handleStepEnter)
 
-
 			// setup resize event
 			window.addEventListener('resize', handleResize);
-			worldmap()
+			worldmap();
 			showdotchart();
 		}
 

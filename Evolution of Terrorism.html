@@ -85,6 +85,19 @@
 			padding: 1rem;
 			font-size: 1.5rem;
 		}
+		div.tooltip {	
+		    position: absolute;			
+		    text-align: center;			
+		    width: 120px;					
+		    height: 28px;					
+		    padding: 1px;
+		    color: white;				
+		    font: 12px sans-serif;		
+		    background: grey;	
+		    border: 0px;		
+		    border-radius: 8px;			
+		    pointer-events: none;			
+		}
 	</style>
 
 </head>
@@ -126,9 +139,12 @@
 					<div class='step' data-step='4'>
 						<p>STEP 4</p>
 					</div>
+					<div class='step' data-step='5'>
+						<p>STEP 5</p>
+					</div>
 				</article>
 				<figure class="sticky1">
-					<p>0</p>
+					<!-- <p>0</p> -->
 				</figure>
 			</div>
 			<div class="second">
@@ -136,9 +152,6 @@
 					<p>0</p>
 				</figure>
 				<article class="scroll2">
-					<div class='step' data-step='5'>
-						<p>STEP 5</p>
-					</div>
 					<div class='step' data-step='6'>
 						<p>STEP 6</p>
 					</div>
@@ -164,37 +177,74 @@
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/stickyfill/2.1.0/stickyfill.min.js'></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/scrollama/2.0.0/scrollama.min.js"></script>
 	<script>
-		function processcsv(features){
-			var colorfill = []
-			d3.csv("https://gist.githubusercontent.com/haoshuai999/fcc38f23dba68f889cf7fc34c131d6c4/raw/a4386edebb78019c7e98ae2ae32ca506920d2566/nkills.csv", function(killdata) {
+		var savematch = []
+		function processcsv(features,decade){
+			d3.csv("https://gist.githubusercontent.com/haoshuai999/fcc38f23dba68f889cf7fc34c131d6c4/raw/3ef832b6c24750e453b74a9359a50322343ccdfb/nattacks.csv", function(attackdata) {
 				for (var i = 0; i < features.length; i++) {
-					for (var j = 0; j < killdata.length; j++) {
-						if(features[i].properties.labelrank==killdata[j].country){
-							if(parseInt(killdata[j].nkill) > 1300 ){
-								colorfill[i]="#a70000"
-							}
-							else if(parseInt(killdata[j].nkill) > 900 && parseInt(killdata[j].nkill) <= 1300){
-								colorfill[i]="#ff0000"
-							}
-							else if(parseInt(killdata[j].nkill) > 400 && parseInt(killdata[j].nkill) <= 900){
-								colorfill[i]="#ff5252"
-							}
-							else if(parseInt(killdata[j].nkill) > 200 && parseInt(killdata[j].nkill) <= 400){
-								colorfill[i]="#ff7b7b"
-							}
-							else if(parseInt(killdata[j].nkill) >= 0 && parseInt(killdata[j].nkill) <= 200){
-								colorfill[i]="#ffbaba"
-							}
+					for (var j = 0; j < attackdata.length; j++) {
+						if(features[i].properties.name==attackdata[j].country){
+							savematch.push([i,j])
 						}
 					}
 				}
 			})
-			return colorfill
 		};
-		function worldmap(){
-			var width = 1260,
-				  height = 600,
-				  centered;
+		function changecolor(decade){
+			var div = d3.select("body").append("div")	
+				    .attr("class", "tooltip")				
+				    .style("opacity", 0);
+
+			d3.csv("https://gist.githubusercontent.com/haoshuai999/fcc38f23dba68f889cf7fc34c131d6c4/raw/3ef832b6c24750e453b74a9359a50322343ccdfb/nattacks.csv", function(attackdata) {
+				d3.json("https://gist.githubusercontent.com/haoshuai999/6648576cf22f9696805bd0436c6bd0fe/raw/0a9598b48a4314b2e53b29e0e434c14dc993c235/worldrough.geo.json", function(data) {
+					colorfill = []
+					num_of_attack = []
+					for(var k = 0; k < savematch.length; k++){
+						i = savematch[k][0]
+						j = savematch[k][1]
+						if(attackdata[j].decade == decade){
+							if(attackdata[j].decade == decade){
+								num_of_attack[i] = attackdata[j].nattack
+							}
+							if(parseInt(attackdata[j].nattack) > 5000 ){
+								colorfill[i]="#a70000"
+							}
+							else if(parseInt(attackdata[j].nattack) > 2000 && parseInt(attackdata[j].nattack) <= 5000){
+								colorfill[i]="#ff0000"
+							}
+							else if(parseInt(attackdata[j].nattack) > 1000 && parseInt(attackdata[j].nattack) <= 2000){
+								colorfill[i]="#ff5252"
+							}
+							else if(parseInt(attackdata[j].nattack) > 100 && parseInt(attackdata[j].nattack) <= 1000){
+								colorfill[i]="#ff7b7b"
+							}
+							else if(parseInt(attackdata[j].nattack) >= 0 && parseInt(attackdata[j].nattack) <= 100){
+								colorfill[i]="#ffbaba"
+							}
+						}
+					}
+					d3.select(".sticky1").selectAll("path")
+						.attr("fill", function(data,i) {
+							return colorfill[i]
+						})
+						.on("mouseover",function(d,i){
+							div.transition()		
+				                .duration(200)		
+				                .style("opacity", .9);		
+				            div.html(data.features[i].properties.name + ": " + num_of_attack[i])	
+				                .style("left", (d3.event.pageX) + "px")		
+				                .style("top", (d3.event.pageY - 28) + "px");			
+						})
+						.on("mouseout",function(d,i){
+							div.transition()		
+				                .duration(500)		
+				                .style("opacity", 0);	
+						})
+				})
+			})
+		}
+		function worldmap(decade){
+			var width = 1060,
+				  height = 521;
 
 			var svg = d3.select(".sticky1").append("svg")
 			  .attr("width", width)
@@ -219,16 +269,13 @@
 
 
 			d3.json("https://gist.githubusercontent.com/haoshuai999/6648576cf22f9696805bd0436c6bd0fe/raw/0a9598b48a4314b2e53b29e0e434c14dc993c235/worldrough.geo.json", function(data) {
-				var colors = processcsv(data.features)
-				//var colors = ['blue', 'red', 'orange', 'yellow', 'black'];
+				var attacks = processcsv(data.features,decade)
+
 				setTimeout(function(){
 					g.selectAll("path").data(data.features)
 					.enter().append("path")
 					.attr("d", path)
 					.attr('vector-effect', 'non-scaling-stroke')
-					.attr("fill", function(d,i) {
-						return colors[i]
-					})
 				}, 1500)
 			  
 			});
@@ -414,7 +461,7 @@
 			step1.style('height', stepH + 'px');
 			step2.style('height', stepH + 'px');
 
-			var figureHeight = window.innerHeight / 1.5
+			var figureHeight = window.innerHeight / 1.2
 			var figureMarginTop = (window.innerHeight - figureHeight) / 2  
 
 			figure1
@@ -431,7 +478,7 @@
 
 		// scrollama event handlers
 		function handleStepEnter(response) {
-			console.log(response)
+			//console.log(response)
 			// response = { element, direction, index }
 			// add color to current step only
 			step.classed('is-active', function (d, i) {
@@ -444,6 +491,14 @@
 			// update graphic based on step
 			figure1.select('p').text(response.index);
 			figure2.select('p').text(response.index);
+
+			console.log(response.index)
+			if (response.direction == 'down' && response.index < 5){
+				changecolor(response.index + 1);
+			}
+			else if (response.direction == 'up' && response.index < 5){
+				changecolor(response.index + 1)
+			}
 
 			if (response.direction == 'up' && response.index <= 5){
 				d3.select('.sticky2 svg').remove();

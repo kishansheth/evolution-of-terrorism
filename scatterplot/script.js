@@ -4,22 +4,6 @@ var w = 1200,
     left_pad = 250,
     Data_url = '/data.json';
 
-var regionColors = {
-    0: 'red',
-    1: 'orange',
-    2: 'yellow',
-    3: 'green',
-    4: 'blue',
-    5: 'magenta',
-    6: 'violet',
-    7: 'dandelion',
-    8: 'coral',
-    9: 'azure',
-    10: 'brown',
-    11: 'crimson',
-    12: 'cyan'
-}
-
 var svg = d3.select("#punchcard")
         .append("svg")
         .attr("width", w)

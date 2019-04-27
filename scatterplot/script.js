@@ -1,16 +1,32 @@
 var w = 1200,
     h = 600,
-    pad = 50,
-    left_pad = 150,
+    pad = 40,
+    left_pad = 250,
     Data_url = '/data.json';
- 
+
+var regionColors = {
+    0: 'red',
+    1: 'orange',
+    2: 'yellow',
+    3: 'green',
+    4: 'blue',
+    5: 'magenta',
+    6: 'violet',
+    7: 'dandelion',
+    8: 'coral',
+    9: 'azure',
+    10: 'brown',
+    11: 'crimson',
+    12: 'cyan'
+}
+
 var svg = d3.select("#punchcard")
         .append("svg")
         .attr("width", w)
         .attr("height", h);
  
 var x = d3.scale.linear().domain([0, 47]).range([left_pad, w-pad]),
-    y = d3.scale.linear().domain([1, 12]).range([pad, h-pad*2]);
+    y = d3.scale.linear().domain([0, 12]).range([pad, h-pad*2]);
  
 var xAxis = d3.svg.axis().scale(x).orient("bottom")
         .ticks(48)
@@ -20,12 +36,18 @@ var xAxis = d3.svg.axis().scale(x).orient("bottom")
     yAxis = d3.svg.axis().scale(y).orient("left")
         .ticks(12)
         .tickFormat(function (d, i) {
-            return ['Middle East', 'Africa', 'North America', 'Southeast Asia', 'Thursday', 'Friday', 'Saturday', 'Saturday', 'Saturday', 'Saturday', 'Saturday', 'Saturday', 'Saturday'][d];
+            return ['North America', 'Central America & Caribbean', 'South America', 'East Asia', 'Southeast Asia', 'South Asia', 'Central Asia', 'Western Europe', 'Eastern Europe', 'Middle East & North Africa', 'Sub-Saharan Africa', 'Australasia & Oceania'][d];
         });
+
+// Define the div for the tooltip
+var div = d3.select("body").append("div")	
+    .attr("class", "tooltip")				
+    .style("opacity", 0);
+
 
 svg.append("g")
     .attr("class", "axis")
-    .attr("transform", "translate(0, "+(h-pad)+")")
+    .attr("transform", "translate(0, "+(h-pad-40)+")")
     .call(xAxis)
 .selectAll("text")
     .attr("transform", "rotate(90)translate(20,-10)");
@@ -46,7 +68,7 @@ d3.json('https://gist.githubusercontent.com/kishansheth/8e8b21acf9017aeb2cf3fff7
                        function (d) { return d[2]; })),
         r = d3.scale.linear()
             .domain([0, d3.max(punchcard_data, function (d) { return d[2]; })])
-            .range([2, 12]);
+            .range([1, 20]);
  
     svg.selectAll(".loading").remove();
  
@@ -55,35 +77,40 @@ d3.json('https://gist.githubusercontent.com/kishansheth/8e8b21acf9017aeb2cf3fff7
         .enter()
         .append("circle")
         .attr("class", "circle")
-        .style("fill", function(d) { return "#000000"; })
-        .attr("cx", function (d) { return x( parseInt(d[1]) + (parseInt(d[1].substring(5, 6))/12) + (parseInt(d[1].substring(8, 9))/31) - 1970 );})
-        .attr("cy", function (d) { return y(d[0]); })
-        .transition()
-        .duration(1600)
-        .attr("r", function (d) { return r(d[2]); });
-});
+        // .style("fill", function(d) { return "black"/*regionColors[d[0]]*/; })
+        .attr("cx", function (d) { 
+            console.log("year: " + parseInt(d[1]));
+            console.log("full date: " + d[1]);
+            console.log("month from json: " + d[1].substring(5,6));
+            console.log("month: " + parseInt(d[1].substring(5, 6)));
+            console.log("month fraction: " + parseInt(d[1].substring(5, 6))/12);
 
-svg.on("click", function() {
-    svg.selectAll("circle")  // For new circle, go through the update process
-      .on("mouseover", handleMouseOver)
-      .on("mouseout", handleMouseOut);
-  })
+            return x( parseInt(d[1]) + ((parseInt(d[1].substring(5, 7))-1)/12) /*+ (parseInt(d[1].substring(8, 9))/31)*/ - 1970 );
+        })
+        .attr("cy", function (d) { return y(d[0] - 1); })
+        // .transition()
+        // .duration(1600)
+        .attr("r", function (d) { return r(d[2]); })
+        .on("mouseover", function(d) {		
+            div.transition()		
+                .duration(200)		
+                .style("opacity", .9);		
+            div	.html(d[1] + "<br/>"  + d[3])	
+                .style("left", (d3.event.pageX) + "px")		
+                .style("top", (d3.event.pageY) + "px");	
+            })					
+        .on("mouseout", function(d) {		
+            div.transition()		
+                .duration(500)		
+                .style("opacity", 0);	
+        });
+});
 
 function handleMouseOver(d, i) {  // Add interactivity
 
     // Use D3 to select element, change color and size
     d3.select(this).style({
       fill: "orange"
-    });
-
-      // Specify where to put label of text
-    svg.append("text").attr({
-    id: "t" + d.x + "-" + d.y + "-" + i,  // Create an id for text so we can select it later for removing on mouseout
-        x: function() { return x(d.x) - 30; },
-        y: function() { return y(d.y) - 15; }
-    })
-    .text(function() {
-        return [d.x, d.y];  // Value of the text
     });
   }
 

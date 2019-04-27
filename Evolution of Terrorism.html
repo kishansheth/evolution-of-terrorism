@@ -82,8 +82,8 @@
 
 		.step p {
 			text-align: center;
-			padding: 1rem;
-			font-size: 1.5rem;
+			padding: 1px;
+			font-size: 12px;
 		}
 		div.tooltip {	
 		    position: absolute;			
@@ -98,6 +98,33 @@
 		    border-radius: 8px;			
 		    pointer-events: none;			
 		}
+		.axis path,
+		.axis line {
+		  fill: none;
+		  stroke: #000;
+		  shape-rendering: crispEdges;
+		}
+
+		.line {
+		  fill:none;
+		}
+
+		.x.axis path {
+		  display: inline;
+		}
+
+		.y.axis path {
+		  display: none;
+		}
+
+
+			
+		.axis.y .tick line { 			
+			stroke-width:1px; 			
+			stroke:#ccc; 			
+			stroke-opacity:1;	 		
+		}
+
 	</style>
 
 </head>
@@ -128,19 +155,19 @@
 			<div class="first">
 				<article class="scroll1">
 					<div class='step' data-step='1'>
-						<p>STEP 1</p>
+						<p>This decision was made to increase the amount of funding received from the European Union, which dedicates a third of its budget (50 billion euros) to less economically developed regions for investments in infrastructure, such as schools and hospitals. Yet when regions improve economically, they no longer qualify for the same amount of funding. As a type of statistical gerrymandering, governors of these regions—like in Hungary—have redrawn their borders in order to keep the money flowing.</p>
 					</div>
 					<div class='step' data-step='2'>
-						<p>STEP 2</p>
+						<p>This decision was made to increase the amount of funding received from the European Union, which dedicates a third of its budget (50 billion euros) to less economically developed regions for investments in infrastructure, such as schools and hospitals. Yet when regions improve economically, they no longer qualify for the same amount of funding. As a type of statistical gerrymandering, governors of these regions—like in Hungary—have redrawn their borders in order to keep the money flowing.</p>
 					</div>
 					<div class='step' data-step='3'>
-						<p>STEP 3</p>
+						<p>This decision was made to increase the amount of funding received from the European Union, which dedicates a third of its budget (50 billion euros) to less economically developed regions for investments in infrastructure, such as schools and hospitals. Yet when regions improve economically, they no longer qualify for the same amount of funding. As a type of statistical gerrymandering, governors of these regions—like in Hungary—have redrawn their borders in order to keep the money flowing.</p>
 					</div>
 					<div class='step' data-step='4'>
-						<p>STEP 4</p>
+						<p>This decision was made to increase the amount of funding received from the European Union, which dedicates a third of its budget (50 billion euros) to less economically developed regions for investments in infrastructure, such as schools and hospitals. Yet when regions improve economically, they no longer qualify for the same amount of funding. As a type of statistical gerrymandering, governors of these regions—like in Hungary—have redrawn their borders in order to keep the money flowing.</p>
 					</div>
 					<div class='step' data-step='5'>
-						<p>STEP 5</p>
+						<p>This decision was made to increase the amount of funding received from the European Union, which dedicates a third of its budget (50 billion euros) to less economically developed regions for investments in infrastructure, such as schools and hospitals. Yet when regions improve economically, they no longer qualify for the same amount of funding. As a type of statistical gerrymandering, governors of these regions—like in Hungary—have redrawn their borders in order to keep the money flowing.</p>
 					</div>
 				</article>
 				<figure class="sticky1">
@@ -153,13 +180,16 @@
 				</figure>
 				<article class="scroll2">
 					<div class='step' data-step='6'>
-						<p>STEP 6</p>
+						<p>This decision was made to increase the amount of funding received from the European Union, which dedicates a third of its budget (50 billion euros) to less economically developed regions for investments in infrastructure, such as schools and hospitals. Yet when regions improve economically, they no longer qualify for the same amount of funding. As a type of statistical gerrymandering, governors of these regions—like in Hungary—have redrawn their borders in order to keep the money flowing.</p>
 					</div>
 					<div class='step' data-step='7'>
-						<p>STEP 7</p>
+						<p>This decision was made to increase the amount of funding received from the European Union, which dedicates a third of its budget (50 billion euros) to less economically developed regions for investments in infrastructure, such as schools and hospitals. Yet when regions improve economically, they no longer qualify for the same amount of funding. As a type of statistical gerrymandering, governors of these regions—like in Hungary—have redrawn their borders in order to keep the money flowing.</p>
 					</div>
 					<div class='step' data-step='8'>
-						<p>STEP 8</p>
+						<p>This decision was made to increase the amount of funding received from the European Union, which dedicates a third of its budget (50 billion euros) to less economically developed regions for investments in infrastructure, such as schools and hospitals. Yet when regions improve economically, they no longer qualify for the same amount of funding. As a type of statistical gerrymandering, governors of these regions—like in Hungary—have redrawn their borders in order to keep the money flowing.</p>
+					</div>
+					<div class='step' data-step='9'>
+						<p>This decision was made to increase the amount of funding received from the European Union, which dedicates a third of its budget (50 billion euros) to less economically developed regions for investments in infrastructure, such as schools and hospitals. Yet when regions improve economically, they no longer qualify for the same amount of funding. As a type of statistical gerrymandering, governors of these regions—like in Hungary—have redrawn their borders in order to keep the money flowing.</p>
 					</div>
 				</article>
 			</div>
@@ -176,372 +206,7 @@
 	<script src='https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js'></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/stickyfill/2.1.0/stickyfill.min.js'></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/scrollama/2.0.0/scrollama.min.js"></script>
-	<script>
-		var savematch = []
-		function processcsv(features,decade){
-			d3.csv("https://gist.githubusercontent.com/haoshuai999/fcc38f23dba68f889cf7fc34c131d6c4/raw/3ef832b6c24750e453b74a9359a50322343ccdfb/nattacks.csv", function(attackdata) {
-				for (var i = 0; i < features.length; i++) {
-					for (var j = 0; j < attackdata.length; j++) {
-						if(features[i].properties.name==attackdata[j].country){
-							savematch.push([i,j])
-						}
-					}
-				}
-			})
-		};
-		function changecolor(decade){
-			var div = d3.select("body").append("div")	
-				    .attr("class", "tooltip")				
-				    .style("opacity", 0);
-
-			d3.csv("https://gist.githubusercontent.com/haoshuai999/fcc38f23dba68f889cf7fc34c131d6c4/raw/3ef832b6c24750e453b74a9359a50322343ccdfb/nattacks.csv", function(attackdata) {
-				d3.json("https://gist.githubusercontent.com/haoshuai999/6648576cf22f9696805bd0436c6bd0fe/raw/0a9598b48a4314b2e53b29e0e434c14dc993c235/worldrough.geo.json", function(data) {
-					colorfill = []
-					num_of_attack = []
-					for(var k = 0; k < savematch.length; k++){
-						i = savematch[k][0]
-						j = savematch[k][1]
-						if(attackdata[j].decade == decade){
-							if(attackdata[j].decade == decade){
-								num_of_attack[i] = attackdata[j].nattack
-							}
-							if(parseInt(attackdata[j].nattack) > 5000 ){
-								colorfill[i]="#a70000"
-							}
-							else if(parseInt(attackdata[j].nattack) > 2000 && parseInt(attackdata[j].nattack) <= 5000){
-								colorfill[i]="#ff0000"
-							}
-							else if(parseInt(attackdata[j].nattack) > 1000 && parseInt(attackdata[j].nattack) <= 2000){
-								colorfill[i]="#ff5252"
-							}
-							else if(parseInt(attackdata[j].nattack) > 100 && parseInt(attackdata[j].nattack) <= 1000){
-								colorfill[i]="#ff7b7b"
-							}
-							else if(parseInt(attackdata[j].nattack) >= 0 && parseInt(attackdata[j].nattack) <= 100){
-								colorfill[i]="#ffbaba"
-							}
-						}
-					}
-					d3.select(".sticky1").selectAll("path")
-						.attr("fill", function(data,i) {
-							return colorfill[i]
-						})
-						.on("mouseover",function(d,i){
-							div.transition()		
-				                .duration(200)		
-				                .style("opacity", .9);		
-				            div.html(data.features[i].properties.name + ": " + num_of_attack[i])	
-				                .style("left", (d3.event.pageX) + "px")		
-				                .style("top", (d3.event.pageY - 28) + "px");			
-						})
-						.on("mouseout",function(d,i){
-							div.transition()		
-				                .duration(500)		
-				                .style("opacity", 0);	
-						})
-				})
-			})
-		}
-		function worldmap(decade){
-			var width = 1060,
-				  height = 521;
-
-			var svg = d3.select(".sticky1").append("svg")
-			  .attr("width", width)
-			  .attr("height", height);
-
-			// Add background
-			svg.append('rect')
-			  .style("fill", "#fff")
-			  .attr('width', width)
-			  .attr('height', height);
-
-			var g = svg.append('g');
-
-			var xym = d3.geo.mercator()
-								.center([10,41])
-								.scale(150)
-								.translate([width/2, height/2]);
-			var path = d3.geo.path().projection(xym);
-
-			// Customize the projection to make the center of Thailand become the center of the map
-
-
-
-			d3.json("https://gist.githubusercontent.com/haoshuai999/6648576cf22f9696805bd0436c6bd0fe/raw/0a9598b48a4314b2e53b29e0e434c14dc993c235/worldrough.geo.json", function(data) {
-				var attacks = processcsv(data.features,decade)
-
-				setTimeout(function(){
-					g.selectAll("path").data(data.features)
-					.enter().append("path")
-					.attr("d", path)
-					.attr('vector-effect', 'non-scaling-stroke')
-				}, 1500)
-			  
-			});
-			  // // Zoom
-			  // g.transition()
-			  //   .duration(750)
-			  //   .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')scale(' + k + ')translate(' + -x + ',' + -y + ')');
-
-		}
-		function showdotchart(){
-			//dot
-			var width = 800,
-				height = 500;
-
-			var nodes1 = [];
-			var nodes2 = [];
-
-			var color1 = '#00FF00';
-			var color2 = '#FF0000';
-
-			var svg = d3.select(".sticky2").append("svg")
-				.attr("width", width)
-				.attr("height", height);
-
-			var force = d3.layout.force()
-				.charge(-20)
-				.size([width, height])
-				.nodes(nodes1)
-				.on("tick", tick)
-				.start();
-
-			var force2 = d3.layout.force()
-				.charge(-20)
-				.size([width, height])
-				.nodes(nodes2)
-				.on("tick", tick)
-				.start();
-
-			function tick() {
-			  svg.selectAll(".class1")
-				  .attr("cx", function(data1) { return data1.x - 100; })
-				  .attr("cy", function(data1) { return data1.y - 100; });
-			  svg.selectAll(".class2")
-				  .attr("cx", function(data2) { return data2.x + 200; })
-				  .attr("cy", function(data2) { return data2.y - 100; });
-			}
-
-			var interval = setInterval(function() {
-			  var data1 = {
-				x: width / 2 + 2 * Math.random() - 1,
-				y: height / 2 + 2 * Math.random() - 1
-			  };
-			  var data2 = {
-				x: width / 2 + 2 * Math.random() - 1,
-				y: height / 2 + 2 * Math.random() - 1
-			  };
-
-			  svg.append("circle")
-				  .data([data1])
-				  .attr("r", 1e-6)
-				  .attr('class', 'class1')
-				.transition()
-				  .ease(Math.sqrt)
-				  .attr("r", 4.5);
-
-			  svg.append("circle")
-				  .data([data2])
-				  .attr("r", 1e-6)
-				  .attr('class', 'class2')
-				.transition()
-				  .ease(Math.sqrt)
-				  .attr("r", 4.5);
-
-			  svg.selectAll('.class1')
-				.attr('fill', color1)
-
-			  svg.selectAll('.class2')
-				.attr('fill', color2)
-
-			  if (nodes1.push(data1) > 100) clearInterval(interval);
-			  if (nodes2.push(data2) > 100) clearInterval(interval);
-			  force.start();
-			  force2.start();
-			}, 1);
-		}
-		
-
-		function showbarchart(){
-			//bar chart
-			var margin = {top: 20, right: 20, bottom: 70, left: 40},
-				width2 = 600 - margin.left - margin.right,
-				height2 = 300 - margin.top - margin.bottom;
-
-			// Parse the date / time
-			var	parseDate = d3.time.format("%Y-%m").parse;
-
-			var x = d3.scale.ordinal().rangeRoundBands([0, width2], .05);
-
-			var y = d3.scale.linear().range([height2, 0]);
-
-			var xAxis = d3.svg.axis()
-				.scale(x)
-				.orient("bottom")
-				.tickFormat(d3.time.format("%Y-%m"));
-
-			var yAxis = d3.svg.axis()
-				.scale(y)
-				.orient("left")
-				.ticks(10);
-			
-			var svg = d3.select(".sticky2").append("svg")
-			.attr("width", width2 + margin.left + margin.right)
-			.attr("height", height2 + margin.top + margin.bottom)
-			.append("g")
-			.attr("transform", 
-				  "translate(" + margin.left + "," + margin.top + ")");
-
-			d3.csv("https://gist.githubusercontent.com/haoshuai999/5460519f08584be37c8c40de5bb3f4cd/raw/e533683168c3e2a31ca18a2939023eb8d0879c3c/bardata.csv", function(error, data) {
-
-				data.forEach(function(d) {
-					d.date = parseDate(d.date);
-					d.value = +d.value;
-				});
-				
-			  x.domain(data.map(function(d) { return d.date; }));
-			  y.domain([0, d3.max(data, function(d) { return d.value; })]);
-
-			  svg.append("g")
-				  .attr("class", "x axis")
-				  .attr("transform", "translate(0," + height2 + ")")
-				  .call(xAxis)
-				.selectAll("text")
-				  .style("text-anchor", "end")
-				  .attr("dx", "-.8em")
-				  .attr("dy", "-.55em")
-				  .attr("transform", "rotate(-90)" );
-
-			  svg.append("g")
-				  .attr("class", "y axis")
-				  .call(yAxis)
-				.append("text")
-				  .attr("transform", "rotate(-90)")
-				  .attr("y", 6)
-				  .attr("dy", ".71em")
-				  .style("text-anchor", "end")
-				  .text("Value ($)");
-
-			  svg.selectAll("bar")
-				  .data(data)
-				.enter().append("rect")
-				  .style("fill", "steelblue")
-				  .attr("x", function(d) { return x(d.date); })
-				  .attr("width", x.rangeBand())
-				  .attr("y", function(d) { return y(d.value); })
-				  .attr("height", function(d) { return height2 - y(d.value); });
-
-			});
-		}
-
-		// using d3 for convenience
-		var main = d3.select('main')
-		var scrolly = main.select('#scrolly');
-		var figure1 = scrolly.select('.sticky1');
-		var figure2 = scrolly.select('.sticky2');
-		var article1 = scrolly.select('.scroll1');
-		var article2 = scrolly.select('.scroll2');
-		var step1 = article1.selectAll('.step');
-		var step2 = article2.selectAll('.step');
-		var step = scrolly.selectAll('.step');
-
-		// initialize the scrollama
-		var scroller = scrollama();
-
-		// generic window resize listener event
-		function handleResize() {
-			// 1. update height of step elements
-			var scrollyWidth = window.innerWidth * 0.98
-
-			scrolly
-				.style('width', scrollyWidth + 'px')
-
-			var stepH = Math.floor(window.innerHeight * 0.75);
-			step1.style('height', stepH + 'px');
-			step2.style('height', stepH + 'px');
-
-			var figureHeight = window.innerHeight / 1.2
-			var figureMarginTop = (window.innerHeight - figureHeight) / 2  
-
-			figure1
-				.style('height', figureHeight + 'px')
-				.style('top', figureMarginTop + 'px');
-
-			figure2
-				.style('height', figureHeight + 'px')
-				.style('top', figureMarginTop + 'px');
-
-			// 3. tell scrollama to update new element dimensions
-			scroller.resize();
-		}
-
-		// scrollama event handlers
-		function handleStepEnter(response) {
-			//console.log(response)
-			// response = { element, direction, index }
-			// add color to current step only
-			step.classed('is-active', function (d, i) {
-				return i === response.index;
-			})
-			// step2.classed('is-active', function (d, i) {
-			// 	return i === response.index;
-			// })
-
-			// update graphic based on step
-			figure1.select('p').text(response.index);
-			figure2.select('p').text(response.index);
-
-			console.log(response.index)
-			if (response.direction == 'down' && response.index < 5){
-				changecolor(response.index + 1);
-			}
-			else if (response.direction == 'up' && response.index < 5){
-				changecolor(response.index + 1)
-			}
-
-			if (response.direction == 'up' && response.index <= 5){
-				d3.select('.sticky2 svg').remove();
-				showdotchart();
-			}
-			else if (response.direction == 'down' && response.index > 5 ) {
-				d3.select('.sticky2 svg').remove();
-				showbarchart();
-			}
-
-		}
-
-		function setupStickyfill() {
-			d3.selectAll('.sticky').each(function () {
-				Stickyfill.add(this);
-			});
-		}
-
-		function init() {
-			setupStickyfill();
-
-			// 1. force a resize on load to ensure proper dimensions are sent to scrollama
-			handleResize();
-
-			// 2. setup the scroller passing options
-			// 		this will also initialize trigger observations
-			// 3. bind scrollama event handlers (this can be chained like below)
-			scroller.setup({
-				step: '#scrolly article .step',
-				offset: 0.33,
-				debug: true,
-			})
-				.onStepEnter(handleStepEnter)
-
-			// setup resize event
-			window.addEventListener('resize', handleResize);
-			worldmap();
-			showdotchart();
-		}
-
-		// kick things off
-		init();
-	</script>
+	<script src="./D3charts.js"></script>
 </body>
 
 </html>

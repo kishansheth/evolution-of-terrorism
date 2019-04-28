@@ -63,12 +63,12 @@ svg.append("text")
     .attr("x", function () { return w/2; })
     .attr("y", function () { return h/2-5; });
  
-d3.json('https://gist.githubusercontent.com/kishansheth/8e8b21acf9017aeb2cf3fff7c0682f8e/raw/7bdd44f99bb0addc0fc951af371d5dfdd11a2be8/scatterplot_data.json', function (punchcard_data) {
+d3.json('https://gist.githubusercontent.com/kishansheth/8e8b21acf9017aeb2cf3fff7c0682f8e/raw/de604427f0cb5a3e10a3f65be4db27de8d9e0f21/scatterplot_data.json', function (punchcard_data) {
     var max_r = d3.max(punchcard_data.map(
                        function (d) { return d[2]; })),
         r = d3.scale.linear()
             .domain([0, d3.max(punchcard_data, function (d) { return d[2]; })])
-            .range([1, 20]);
+            .range([1.5, 25]);
  
     svg.selectAll(".loading").remove();
  

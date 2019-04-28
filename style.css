@@ -26,6 +26,10 @@ a {
 	font-weight: 400;
 }
 
+h2, h4 {
+	margin: 20px 0px;
+}
+
 a,
 a:visited,
 a:hover {
@@ -86,7 +90,7 @@ iframe {
 }
 
 .intro__dek {
-	color: #8a8a8a;
+	color: black;
 }
 
 .github-corner:hover .octo-arm {
@@ -140,7 +144,8 @@ iframe {
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: inline-block;
-	background-color: #f3f3f3;
+	/* background-color: #f3f3f3; */
+	background-color: black;
 	padding: 1rem;
 }
 
@@ -174,11 +179,11 @@ figure {
 	-webkit-transform: translate3d(0, 0, 0);
 	-moz-transform: translate3d(0, 0, 0);
 	transform: translate3d(0, 0, 0);
-	background-color: #8a8a8a;
+	background-color: black;
 }
 
 figure p {
-	text-align: center;
+	text-align: left;
 	padding: 1rem;
 	position: absolute;
 	top: 50%;
@@ -194,8 +199,8 @@ figure p {
 
 .step {
 	margin: 0 auto 2rem auto;
-	background-color: #3b3b3b;
-	color: #fff;
+	background-color: black;
+	color: white;
 }
 
 .step:last-child {
@@ -203,12 +208,16 @@ figure p {
 }
 
 .step.is-active {
-	background-color: goldenrod;
-	color: #3b3b3b;
+	/* background-color: black;
+	color: white; */
+}
+
+.step.is-active h2 {
+	color: red;
 }
 
 .step p {
-	text-align: center;
+	text-align: left;
 	padding: 1px;
 	font-size: 12px;
 }
@@ -254,8 +263,8 @@ figure p {
 }
  
 .axis text {
-    color: white;
-    font-family: 'Roboto Mono';
+	font-family: 'Roboto Mono';
+	font-weight: 300;
     font-size: 11px;
 }
  

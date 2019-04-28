@@ -49,6 +49,7 @@ function changecolor(decade){
 				.attr("fill", function(data,i) {
 					return colorfill[i]
 				})
+				.attr("stroke", "white")
 				.on("mouseover",function(d,i){
 					div.transition()		
 						.duration(200)		
@@ -75,7 +76,7 @@ function worldmap(decade){
 
 	// Add background
 	svg.append('rect')
-	  .style("fill", "#fff")
+	  .style("fill", "#000")
 	  .attr('width', width)
 	  .attr('height', height);
 
@@ -301,12 +302,15 @@ function showbubblechart(){
 		.attr("transform", "translate(0, "+(h-pad-40)+")")
 		.call(xAxis)
 	.selectAll("text")
-		.attr("transform", "rotate(90)translate(20,-10)");
+		.attr("transform", "rotate(90)translate(25,-13)")
+		.style("fill", "#aaa");
 	 
 	svg.append("g")
 		.attr("class", "axis")
 		.attr("transform", "translate("+(left_pad-pad)+", 0)")
-		.call(yAxis);
+		.call(yAxis)
+	.selectAll("text")
+		.style("fill", "#aaa");
 	 
 	svg.append("text")
 		.attr("class", "loading")
@@ -509,7 +513,7 @@ function init() {
 	// 3. bind scrollama event handlers (this can be chained like below)
 	scroller.setup({
 		step: '#scrolly article .step',
-		offset: 0.33,
+		offset: 0.40,
 		debug: true,
 	})
 		.onStepEnter(handleStepEnter)

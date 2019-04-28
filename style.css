@@ -281,7 +281,8 @@ figure p {
  
 .circle {
     fill: rgba(0, 0, 0, .5);
-    stroke: white;
+	stroke: #555555;
+	stroke-width: 1;
 }
 
 div.tooltip {	

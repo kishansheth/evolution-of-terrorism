@@ -265,7 +265,9 @@ function animatelines(){
 	})		 
 			 
 };
-function showbubblechart(){
+
+function showbubblechart(slide){
+	
 	var w = 1000,
 	h = 500,
 	pad = 40,
@@ -327,7 +329,7 @@ function showbubblechart(){
 						   function (d) { return d[2]; })),
 			r = d3.scale.linear()
 				.domain([0, d3.max(punchcard_data, function (d) { return d[2]; })])
-				.range([1, 30]);
+				.range([1.5, 30]);
 	 
 		svg.selectAll(".loading").remove();
 	 
@@ -342,6 +344,45 @@ function showbubblechart(){
 			})
 			.attr("cy", function (d) { return y(d[0] - 1); })
 			.attr("r", function (d) { return r(d[2]); })
+			.style('fill', function (d) {
+				if (slide == 5) {
+					return "red";
+				}
+				if (slide == 6) {
+					if (d[2] > 225) {
+						return "red";
+					}
+				}
+				if (slide == 7) {
+					if ( d[0] == 2 && parseInt(d[1]) > 1980 && parseInt(d[1]) < 1990) {
+						console.log(slide, d);
+						return "red";
+					}
+				}
+				if (slide == 8) {
+					if (d[3].toLowerCase().includes("hutu") || d[3].toLowerCase().includes("tutsi")) {
+						console.log(slide, d);
+						return "red";
+					}
+				}
+				if (slide == 9) {
+					if (d[1] == "2001-09-11") {
+						return "red";
+					}
+				}
+				if (slide == 10) {
+					if (d[0] == 10 && d[3].toLowerCase().includes("isil")) {
+						return "red";
+					}
+				}
+				// else if (currentSlide == 1) {
+				// 	if 
+				// }
+				// else if () {}
+				// else if () {}
+				// else if () {}
+				// else {}
+			})
 			.style('opacity', 0);
 
 		dots.transition()
@@ -350,18 +391,22 @@ function showbubblechart(){
 		
 		dots.on("mouseover", function(d, i) {		
 				d3.select(this).style({
-					fill: "white"
+					stroke: "white"
 					});
 				div.transition()		
 					.duration(200)		
 					.style("opacity", .9);
-				div	.html("Group: " + d[3] + "<br/>" + "Country: " + d[4] + "<br/>" + "Fatalities: " + parseInt(d[3]))	
+				div	.html(
+					"Group: " + d[3] + "<br/>" 
+					+ "Country: " + d[4] + "<br/>" 
+					+ "Fatalities: " + parseInt(d[2]) + "<br/>"
+					+ "Date: " + d[1])	
 					.style("left", (d3.event.pageX - 0) + "px")		
 					.style("top", (d3.event.pageY - 0) + "px");
 			})							
 			.on("mouseout", function(d, i) {
 				d3.select(this).style({
-					fill: "black"
+					stroke: "#555"
 				  });		
 				div.transition()		
 					.duration(500)		
@@ -445,15 +490,75 @@ function handleStepEnter(response) {
 		d3.select('.tooltip').remove();
 		changecolor(response.index + 1);
 	}
-	else if (response.direction == 'down' && response.index >= 5 && response.index < 12){
+	else if (response.direction == 'down' && response.index == 5){
 		d3.select('.sticky1 svg').remove();
 		d3.select('.tooltip').remove();
-		showbubblechart();
+		showbubblechart(5);
 	}
-	else if (response.direction == 'up' && response.index >= 5 && response.index < 12){
+	else if (response.direction == 'up' && response.index == 5){
 		d3.select('.sticky1 svg').remove();
 		d3.select('.tooltip').remove();
-		showbubblechart();
+		showbubblechart(5);
+	}
+	else if (response.direction == 'down' && response.index == 6){
+		d3.select('.sticky1 svg').remove();
+		d3.select('.tooltip').remove();
+		showbubblechart(6);
+	}
+	else if (response.direction == 'up' && response.index == 6){
+		d3.select('.sticky1 svg').remove();
+		d3.select('.tooltip').remove();
+		showbubblechart(6);
+	}
+	else if (response.direction == 'down' && response.index == 7){
+		d3.select('.sticky1 svg').remove();
+		d3.select('.tooltip').remove();
+		showbubblechart(7);
+	}
+	else if (response.direction == 'up' && response.index == 7){
+		d3.select('.sticky1 svg').remove();
+		d3.select('.tooltip').remove();
+		showbubblechart(7);
+	}
+	else if (response.direction == 'down' && response.index == 8){
+		d3.select('.sticky1 svg').remove();
+		d3.select('.tooltip').remove();
+		showbubblechart(8);
+	}
+	else if (response.direction == 'up' && response.index == 8){
+		d3.select('.sticky1 svg').remove();
+		d3.select('.tooltip').remove();
+		showbubblechart(8);
+	}
+	else if (response.direction == 'down' && response.index == 9){
+		d3.select('.sticky1 svg').remove();
+		d3.select('.tooltip').remove();
+		showbubblechart(9);
+	}
+	else if (response.direction == 'up' && response.index == 9){
+		d3.select('.sticky1 svg').remove();
+		d3.select('.tooltip').remove();
+		showbubblechart(9);
+	}
+	else if (response.direction == 'down' && response.index == 10){
+		d3.select('.sticky1 svg').remove();
+		d3.select('.tooltip').remove();
+		showbubblechart(10);
+	}
+	else if (response.direction == 'up' && response.index == 10){
+		d3.select('.sticky1 svg').remove();
+		d3.select('.tooltip').remove();
+		showbubblechart(10);
+	}
+	else if (response.direction == 'down' && response.index == 11){
+		d3.select('.sticky1 svg').remove();
+		d3.select('.tooltip').remove();
+		showbubblechart(11);
+	}
+	else if (response.direction == 'up' && response.index == 11){
+		d3.select('.sticky1 svg').remove();
+		d3.select('.tooltip').remove();
+		showbubblechart(11);
 	}
 	else if (response.direction == 'down' && response.index == 12){
 		d3.select('.sticky2 svg').remove();

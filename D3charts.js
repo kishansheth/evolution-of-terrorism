@@ -13,8 +13,8 @@ function processcsv(features,decade){
 function changecolor(decade){
 
 	var div = d3.select("body").append("div")	
-		    .attr("class", "tooltip")			
-		    .style("opacity", 0);
+			.attr("class", "tooltip")			
+			.style("opacity", 0);
 
 
 	d3.csv("https://gist.githubusercontent.com/haoshuai999/fcc38f23dba68f889cf7fc34c131d6c4/raw/3ef832b6c24750e453b74a9359a50322343ccdfb/nattacks.csv", function(attackdata) {
@@ -51,16 +51,16 @@ function changecolor(decade){
 				})
 				.on("mouseover",function(d,i){
 					div.transition()		
-		                .duration(200)		
-		                .style("opacity", .9);		
-		            div.html(data.features[i].properties.name + ": " + num_of_attack[i])	
-		                .style("left", (d3.event.pageX) + "px")		
-		                .style("top", (d3.event.pageY - 28) + "px");			
+						.duration(200)		
+						.style("opacity", .9);		
+					div.html(data.features[i].properties.name + ": " + num_of_attack[i])	
+						.style("left", (d3.event.pageX) + "px")		
+						.style("top", (d3.event.pageY - 28) + "px");			
 				})
 				.on("mouseout",function(d,i){
 					div.transition()		
-		                .duration(500)		
-		                .style("opacity", 0);	
+						.duration(500)		
+						.style("opacity", 0);	
 				})
 		})
 	})
@@ -155,7 +155,7 @@ function drawline(data){
 	
 	 
 	  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
-	  		  
+			  
 	  // Take each row and put the date column through the parsedate form we've defined above.	
 	  data.forEach(function(d) {
 		d.date = parseDate(d.date);
@@ -232,12 +232,12 @@ function drawline(data){
 		 //Draw all lines onload
 		animatelines();
 }
-function showlinechart(){
+function showlinechart(url){
 	// Load in the data now...
 	
-	d3.csv("https://gist.githubusercontent.com/haoshuai999/dbe67bcac6101074962a2de18298466c/raw/d56fe7857463c1d86989ad078a7e7db8927c8ca7/data.csv", function(error, data) {
+	d3.csv(url, function(error, data) {
 
-	 	drawline(data);
+		drawline(data);
 
 	})
 };
@@ -264,89 +264,113 @@ function animatelines(){
 	})		 
 			 
 };
+function showbubblechart(){
+	var w = 1000,
+	h = 500,
+	pad = 40,
+	left_pad = 250,
+	Data_url = '/data.json';
 
-function showlinechart2(){
+	var svg = d3.select(".sticky1")
+			.append("svg")
+			.attr("width", w)
+			.attr("height", h);
+	 
+	var x = d3.scale.linear().domain([0, 47]).range([left_pad, w-pad]),
+		y = d3.scale.linear().domain([0, 12]).range([pad, h-pad*2]);
+	 
+	var xAxis = d3.svg.axis().scale(x).orient("bottom")
+			.ticks(48)
+			.tickFormat(function (d, i) {
+				return d+1970;
+			})
+		yAxis = d3.svg.axis().scale(y).orient("left")
+			.ticks(12)
+			.tickFormat(function (d, i) {
+				return ['North America', 'Central America & Caribbean', 'South America', 'East Asia', 'Southeast Asia', 'South Asia', 'Central Asia', 'Western Europe', 'Eastern Europe', 'Middle East & North Africa', 'Sub-Saharan Africa', 'Australasia & Oceania'][d];
+			});
 
-	d3.csv("https://gist.githubusercontent.com/haoshuai999/dbe67bcac6101074962a2de18298466c/raw/d56fe7857463c1d86989ad078a7e7db8927c8ca7/data.csv", function(error, data) {
+	// Define the div for the tooltip
+	var div = d3.select("body").append("div")	
+		.attr("class", "tooltip")				
+		.style("opacity", 0);
 
-	 	drawline(data);
 
-	})
-// var width = 1200,
-//     height = 500;
+	svg.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate(0, "+(h-pad-40)+")")
+		.call(xAxis)
+	.selectAll("text")
+		.attr("transform", "rotate(90)translate(20,-10)");
+	 
+	svg.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate("+(left_pad-pad)+", 0)")
+		.call(yAxis);
+	 
+	svg.append("text")
+		.attr("class", "loading")
+		.text("Loading ...")
+		.attr("x", function () { return w/2; })
+		.attr("y", function () { return h/2-5; });
+	 
+	d3.json('https://gist.githubusercontent.com/kishansheth/8e8b21acf9017aeb2cf3fff7c0682f8e/raw/7bdd44f99bb0addc0fc951af371d5dfdd11a2be8/scatterplot_data.json', function (punchcard_data) {
+		var max_r = d3.max(punchcard_data.map(
+						   function (d) { return d[2]; })),
+			r = d3.scale.linear()
+				.domain([0, d3.max(punchcard_data, function (d) { return d[2]; })])
+				.range([1, 20]);
+	 
+		svg.selectAll(".loading").remove();
+	 
+		svg.selectAll("circle")
+			.data(punchcard_data)
+			.enter()
+			.append("circle")
+			.attr("class", "circle")
+			// .style("fill", function(d) { return "black"/*regionColors[d[0]]*/; })
+			.attr("cx", function (d) { 
+				console.log("year: " + parseInt(d[1]));
+				console.log("full date: " + d[1]);
+				console.log("month from json: " + d[1].substring(5,6));
+				console.log("month: " + parseInt(d[1].substring(5, 6)));
+				console.log("month fraction: " + parseInt(d[1].substring(5, 6))/12);
 
-// var nodes1 = [];
-// var nodes2 = [];
+				return x( parseInt(d[1]) + ((parseInt(d[1].substring(5, 7))-1)/12) /*+ (parseInt(d[1].substring(8, 9))/31)*/ - 1970 );
+			})
+			.attr("cy", function (d) { return y(d[0] - 1); })
+			// .transition()
+			// .duration(1600)
+			.attr("r", function (d) { return r(d[2]); })
+			.on("mouseover", function(d) {		
+				div.transition()		
+					.duration(200)		
+					.style("opacity", .9);		
+				div	.html(d[1] + "<br/>"  + d[3])	
+					.style("left", (d3.event.pageX) + "px")		
+					.style("top", (d3.event.pageY) + "px");	
+				})					
+			.on("mouseout", function(d) {		
+				div.transition()		
+					.duration(500)		
+					.style("opacity", 0);	
+			});
+	});
+}
+function handleMouseOver(d, i) {  // Add interactivity
 
-// var color1 = '#00FF00';
-// var color2 = '#FF0000';
+    // Use D3 to select element, change color and size
+    d3.select(this).style({
+      fill: "orange"
+    });
+  }
 
-// var svg = d3.select(".sticky2").append("svg")
-//     .attr("width", width)
-//     .attr("height", height);
-
-// var force = d3.layout.force()
-//     .charge(-20)
-//     .size([width, height])
-//     .nodes(nodes1)
-//     .on("tick", tick)
-//     .start();
-
-// var force2 = d3.layout.force()
-//     .charge(-20)
-//     .size([width, height])
-//     .nodes(nodes2)
-//     .on("tick", tick)
-//     .start();
-
-// function tick() {
-// 	  svg.selectAll(".class1")
-// 	      .attr("cx", function(data1) { return data1.x - 300; })
-// 	      .attr("cy", function(data1) { return data1.y; });
-// 	  svg.selectAll(".class2")
-// 	      .attr("cx", function(data2) { return data2.x + 100; })
-// 	      .attr("cy", function(data2) { return data2.y; });
-// 	}
-
-// 	var interval = setInterval(function() {
-// 	  var data1 = {
-// 	    x: width / 2 + 2 * Math.random() - 1,
-// 	    y: height / 2 + 2 * Math.random() - 1
-// 	  };
-// 	  var data2 = {
-// 	    x: width / 2 + 2 * Math.random() - 1,
-// 	    y: height / 2 + 2 * Math.random() - 1
-// 	  };
-
-// 	  svg.append("circle")
-// 	      .data([data1])
-// 	      .attr("r", 1e-6)
-// 	      .attr('class', 'class1')
-// 	    .transition()
-// 	      .ease(Math.sqrt)
-// 	      .attr("r", 4.5);
-
-// 	  svg.append("circle")
-// 	      .data([data2])
-// 	      .attr("r", 1e-6)
-// 	      .attr('class', 'class2')
-// 	    .transition()
-// 	      .ease(Math.sqrt)
-// 	      .attr("r", 4.5);
-
-// 	  svg.selectAll('.class1')
-// 	    .attr('fill', color1)
-
-// 	  svg.selectAll('.class2')
-// 	    .attr('fill', color2)
-
-// 	  if (nodes1.push(data1) > 100) clearInterval(interval);
-// 	  if (nodes2.push(data2) > 100) clearInterval(interval);
-// 	  force.start();
-// 	  force2.start();
-// 	}, 1);
-
-};
+function handleMouseOut(d, i) {
+    // Use D3 to select element, change color back to normal
+    d3.select(this).style({
+      fill: "black"
+    });
+}
 
 // using d3 for convenience
 var main = d3.select('main');
@@ -358,18 +382,11 @@ var article2 = scrolly.select('.scroll2');
 var step1 = article1.selectAll('.step');
 var step2 = article2.selectAll('.step');
 var step = scrolly.selectAll('.step');
-// Create 2 datasets
-// var data1 = [
-// {ser1: 0.3, ser2: 4},
-// {ser1: 2, ser2: 16},
-// {ser1: 3, ser2: 8}
-// ];
+var url0 = "https://gist.githubusercontent.com/haoshuai999/dbe67bcac6101074962a2de18298466c/raw/d56fe7857463c1d86989ad078a7e7db8927c8ca7/data.csv"
+var url1 = "https://gist.githubusercontent.com/haoshuai999/cfb02118786cf52476da5d0983e3ebe6/raw/bc6d825ef2e71d3559ae23023d387bd896ddf1c8/allweapons.csv"
+var url2 = "https://gist.githubusercontent.com/haoshuai999/61390fedd6e351449d70b2a8b6dc7ace/raw/883a08e21ff297097598fbfc58eda610b901123c/explosives.csv"
+var url3 = "https://gist.githubusercontent.com/haoshuai999/61480128cffc7a68391aea03b7a54f6e/raw/13de4768250360561e6668a87775eb15e06eda6f/firearms.csv"
 
-// var data2 = [
-// {ser1: 1, ser2: 7},
-// {ser1: 4, ser2: 1},
-// {ser1: 6, ser2: 8}
-// ];
 
 // initialize the scrollama
 var scroller = scrollama();
@@ -422,31 +439,56 @@ function handleStepEnter(response) {
 		d3.select('.tooltip').remove();
 		changecolor(response.index + 1);
 	}
+	else if (response.direction == 'up' && response.index == 4){
+		d3.select('.sticky1 svg').remove();
+		worldmap();
+	}
 	else if (response.direction == 'up' && response.index < 5){
 		d3.select('.tooltip').remove();
-		changecolor(response.index + 1)
+		changecolor(response.index + 1);
 	}
-
-	if (response.direction == 'down' && response.index >= 5 && response.index <= 7){
+	else if (response.direction == 'down' && response.index >= 5 && response.index < 12){
+		d3.select('.sticky1 svg').remove();
+		d3.select('.tooltip').remove();
+		showbubblechart();
+	}
+	else if (response.direction == 'up' && response.index >= 5 && response.index < 12){
+		d3.select('.sticky1 svg').remove();
+		d3.select('.tooltip').remove();
+		showbubblechart();
+	}
+	else if (response.direction == 'down' && response.index == 12){
 		d3.select('.sticky2 svg').remove();
-		showlinechart();
+		showlinechart(url0);
 	}
-	else if (response.direction == 'up' && response.index <= 7){
+	else if (response.direction == 'up' && response.index == 12){
 		d3.select('.sticky2 svg').remove();
-		showlinechart();
+		showlinechart(url0);
 	}
-	else if (response.direction == 'down' && response.index > 7 ) {
+	else if (response.direction == 'down' && response.index == 13) {
 		d3.select('.sticky2 svg').remove();
-		showlinechart2();
+		showlinechart(url1);
 	}
-	// else if (response.direction == 'up' && response.index <= 8 ) {
-	// 	d3.select('.sticky2 svg').remove();
-	// 	showlinechart2(data1);
-	// }
-	// else if (response.direction == 'down' && response.index > 8 ) {
-	// 	d3.select('.sticky2 svg').remove();
-	// 	showlinechart2(data2);
-	// }
+	else if (response.direction == 'up' && response.index == 13) {
+		d3.select('.sticky2 svg').remove();
+		showlinechart(url1);
+	}
+	else if (response.direction == 'down' && response.index == 14) {
+		d3.select('.sticky2 svg').remove();
+		showlinechart(url2);
+	}
+	else if (response.direction == 'up' && response.index == 14) {
+		d3.select('.sticky2 svg').remove();
+		showlinechart(url2);
+	}
+	else if (response.direction == 'down' && response.index == 15) {
+		d3.select('.sticky2 svg').remove();
+		showlinechart(url3);
+	}
+	else if (response.direction == 'up' && response.index == 15) {
+		d3.select('.sticky2 svg').remove();
+		showlinechart(url3);
+	}
 
 }
 

@@ -301,6 +301,8 @@ function showbubblechart(){
 		.attr("class", "axis")
 		.attr("transform", "translate(0, "+(h-pad-40)+")")
 		.call(xAxis)
+		.transition()
+		.duration(1000)
 	.selectAll("text")
 		.attr("transform", "rotate(90)translate(25,-13)")
 		.style("fill", "#aaa");
@@ -309,6 +311,8 @@ function showbubblechart(){
 		.attr("class", "axis")
 		.attr("transform", "translate("+(left_pad-pad)+", 0)")
 		.call(yAxis)
+		.transition()
+		.duration(1000)
 	.selectAll("text")
 		.style("fill", "#aaa");
 	 
@@ -318,62 +322,52 @@ function showbubblechart(){
 		.attr("x", function () { return w/2; })
 		.attr("y", function () { return h/2-5; });
 	 
-	d3.json('https://gist.githubusercontent.com/kishansheth/8e8b21acf9017aeb2cf3fff7c0682f8e/raw/7bdd44f99bb0addc0fc951af371d5dfdd11a2be8/scatterplot_data.json', function (punchcard_data) {
+	d3.json('https://gist.githubusercontent.com/kishansheth/8e8b21acf9017aeb2cf3fff7c0682f8e/raw/de604427f0cb5a3e10a3f65be4db27de8d9e0f21/scatterplot_data.json', function (punchcard_data) {
 		var max_r = d3.max(punchcard_data.map(
 						   function (d) { return d[2]; })),
 			r = d3.scale.linear()
 				.domain([0, d3.max(punchcard_data, function (d) { return d[2]; })])
-				.range([1, 20]);
+				.range([1, 30]);
 	 
 		svg.selectAll(".loading").remove();
 	 
-		svg.selectAll("circle")
+		var dots = svg.selectAll("circle")
 			.data(punchcard_data)
 			.enter()
 			.append("circle")
 			.attr("class", "circle")
 			// .style("fill", function(d) { return "black"/*regionColors[d[0]]*/; })
 			.attr("cx", function (d) { 
-				console.log("year: " + parseInt(d[1]));
-				console.log("full date: " + d[1]);
-				console.log("month from json: " + d[1].substring(5,6));
-				console.log("month: " + parseInt(d[1].substring(5, 6)));
-				console.log("month fraction: " + parseInt(d[1].substring(5, 6))/12);
-
 				return x( parseInt(d[1]) + ((parseInt(d[1].substring(5, 7))-1)/12) /*+ (parseInt(d[1].substring(8, 9))/31)*/ - 1970 );
 			})
 			.attr("cy", function (d) { return y(d[0] - 1); })
-			// .transition()
-			// .duration(1600)
 			.attr("r", function (d) { return r(d[2]); })
-			.on("mouseover", function(d) {		
+			.style('opacity', 0);
+
+		dots.transition()
+			.duration(1000)
+			.style('opacity', 1);
+		
+		dots.on("mouseover", function(d, i) {		
+				d3.select(this).style({
+					fill: "white"
+					});
 				div.transition()		
 					.duration(200)		
-					.style("opacity", .9);		
-				div	.html(d[1] + "<br/>"  + d[3])	
-					.style("left", (d3.event.pageX) + "px")		
-					.style("top", (d3.event.pageY) + "px");	
-				})					
-			.on("mouseout", function(d) {		
+					.style("opacity", .9);
+				div	.html("Group: " + d[3] + "<br/>" + "Country: " + d[4] + "<br/>" + "Fatalities: " + parseInt(d[3]))	
+					.style("left", (d3.event.pageX - 0) + "px")		
+					.style("top", (d3.event.pageY - 0) + "px");
+			})							
+			.on("mouseout", function(d, i) {
+				d3.select(this).style({
+					fill: "black"
+				  });		
 				div.transition()		
 					.duration(500)		
 					.style("opacity", 0);	
 			});
 	});
-}
-function handleMouseOver(d, i) {  // Add interactivity
-
-    // Use D3 to select element, change color and size
-    d3.select(this).style({
-      fill: "orange"
-    });
-  }
-
-function handleMouseOut(d, i) {
-    // Use D3 to select element, change color back to normal
-    d3.select(this).style({
-      fill: "black"
-    });
 }
 
 // using d3 for convenience

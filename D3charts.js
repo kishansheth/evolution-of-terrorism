@@ -67,25 +67,25 @@ function changecolor(decade){
 	})
 }
 function worldmap(decade){
-	var width = 1060,
-		  height = 521;
+	var width = 1000,
+		  height = 600;
 
 	var svg = d3.select(".sticky1").append("svg")
 	  .attr("width", width)
 	  .attr("height", height);
 
 	// Add background
-	svg.append('rect')
-	  .style("fill", "#000")
-	  .attr('width', width)
-	  .attr('height', height);
+	// svg.append('rect')
+	//   .style("fill", "#000")
+	//   .attr('width', width)
+	//   .attr('height', height);
 
 	var g = svg.append('g');
 
-	var xym = d3.geo.mercator()
-						.center([10,41])
+	var xym = d3.geo.equirectangular()
+						.center([10,31])
 						.scale(150)
-						.translate([width/2, height/2]);
+						.translate([width/2, height/3]);
 	var path = d3.geo.path().projection(xym);
 
 	// Customize the projection to make the center of Thailand become the center of the map
@@ -100,9 +100,42 @@ function worldmap(decade){
 			.enter().append("path")
 			.attr("d", path)
 			.attr('vector-effect', 'non-scaling-stroke')
-		}, 1500)
+		}, 200)
 	  
 	});
+
+	var allcolor = ["#000","#ffbaba","#ff7b7b","#ff5252","#ff0000","#a70000"]
+	var attach_num = ["No records","0-100","100-1000","1000-2000","2000-5000",">5000"]
+
+	svg.append('text')
+        .attr("x", width * 0.02)
+        .attr("y", 20)
+        .text("Number of Attacks:")
+        .style("fill","#fff")
+	    .style("font-size","10px")
+
+    for (var i = 0; i < attach_num.length; i++) {
+	    svg.append('rect')
+	        .attr("x", width * (0.8 - 0.12 * i))
+	        .attr("y", 10)
+	        .attr("width", 10)
+	        .attr("height", 10)
+	        .style("stroke","white")
+	        .style("stroke-width","1px")
+	        .style("fill", function (d) {
+	            return allcolor[i]
+	        })
+	    
+	    svg.append('text')
+	        .attr("x", width * (0.82 - 0.12 * i))
+	        .attr("y", 20)
+	        .style("fill","#fff")
+	        .style("font-size","10px")
+	    //.attr("dy", ".35em")
+	        .text(function (d) {
+	            return attach_num[i]
+	        })
+	}
 
 }
 function drawline(data){
@@ -126,7 +159,7 @@ function drawline(data){
 		.range([height, 0]);
 	
 	// Same for colour.
-	var color = d3.scale.category10();
+	var color = d3.scale.ordinal().range(["#1F77B4", "#FF7F0E"]);
 	
 	//Setting x-axis up here using x scaling object
 	var xAxis = d3.svg.axis()
@@ -186,6 +219,7 @@ function drawline(data){
 	  // Bind the x-axis to the svg object
 	  svg.append("g")
 		  .attr("class", "x axis")
+		  .style("fill", "#fff")
 		  .attr("transform", "translate(0," + height + ")")
 		  .call(xAxis)
 		.append("text") 
@@ -193,20 +227,45 @@ function drawline(data){
 		  .attr("x", width/2 ) //place the year label in the middle of the axis
 		  .attr("dx", ".71em") 
 		  .style("text-anchor", "end")
+		  .style("fill", "#fff")
 		  .text("Year");
 	
 		// append the yAxis and add label as before.
 	  svg.append("g")
 		  .attr("class", "y axis")
+		  .style("fill", "#fff")
 		  .attr("id", "#yAxis")
 		  .call(yAxis)
 		.append("text")
-		  .attr("y", 0)
+		  .attr("y", -10)
 		  .attr("x", 0)
 		  .attr("dy", ".71em")
 		  .style("text-anchor", "start")
+		  .style("fill", "#fff")
 		  .text("Percentage");
 	  
+		  //draw the legend
+        for (var i = 0; i < projections.length; i++) {
+	        svg.append('rect')
+	            .attr("x", width * (0.8 - 0.22 * i))
+	            .attr("y", -10)
+	            .attr("width", 10)
+	            .attr("height", 10)
+	            .style("fill", function (d) {
+		            return color(i)
+		        })
+	        
+	        svg.append('text')
+	            .attr("x", width * (0.82 - 0.22 * i))
+	            .attr("y", 0)
+	            .style("fill","#fff")
+	            .style("font-size","10px")
+	        //.attr("dy", ".35em")
+		        .text(function (d) {
+		            return projections[i].name
+		        })
+        }
+
 
 		//create proj
 		var proj = svg.selectAll(".proj")
@@ -251,17 +310,20 @@ function animatelines(){
 	d3.selectAll(".line").each(function(d,i){
 
 	// Get the length of each line in turn
+
 	var totalLength = d3.select("#line" + i).node().getTotalLength();
 
-		d3.selectAll("#line" + i)
-		  .attr("stroke-dasharray", totalLength + " " + totalLength)
-		  .attr("stroke-dashoffset", totalLength)
-		  .transition()
-		  .duration(5000)
-		  .delay(100*i)
-		  .ease("quad") //Try linear, quad, bounce... see other examples here - http://bl.ocks.org/hunzy/9929724
-		  .attr("stroke-dashoffset", 0)
-		  .style("stroke-width",3)
+	
+
+	d3.selectAll("#line" + i)
+	  .attr("stroke-dasharray", totalLength + " " + totalLength)
+	  .attr("stroke-dashoffset", totalLength)
+	  .transition()
+	  .duration(2500)
+	  .delay(10*i)
+	  .ease("quad") //Try linear, quad, bounce... see other examples here - http://bl.ocks.org/hunzy/9929724
+	  .attr("stroke-dashoffset", 0)
+	  .style("stroke-width",3)
 	})		 
 			 
 };
@@ -305,13 +367,13 @@ function changebubblechart(slide) {
 				}
 				if (slide == 7) {
 					if ( d[0] == 2 && parseInt(d[1]) > 1980 && parseInt(d[1]) < 1990) {
-						console.log(slide, d);
+						//console.log(slide, d);
 						return "red";
 					}
 				}
 				if (slide == 8) {
 					if (d[3].toLowerCase().includes("hutu") || d[3].toLowerCase().includes("tutsi")) {
-						console.log(slide, d);
+						//console.log(slide, d);
 						return "red";
 					}
 				}
@@ -463,7 +525,7 @@ var article2 = scrolly.select('.scroll2');
 var step1 = article1.selectAll('.step');
 var step2 = article2.selectAll('.step');
 var step = scrolly.selectAll('.step');
-var url0 = "https://gist.githubusercontent.com/haoshuai999/dbe67bcac6101074962a2de18298466c/raw/d56fe7857463c1d86989ad078a7e7db8927c8ca7/data.csv"
+var url0 = "https://gist.githubusercontent.com/haoshuai999/dbe67bcac6101074962a2de18298466c/raw/1198a8db6eab55799c628ab2519725be5ac55fbf/data.csv"
 var url1 = "https://gist.githubusercontent.com/haoshuai999/cfb02118786cf52476da5d0983e3ebe6/raw/bc6d825ef2e71d3559ae23023d387bd896ddf1c8/allweapons.csv"
 var url2 = "https://gist.githubusercontent.com/haoshuai999/61390fedd6e351449d70b2a8b6dc7ace/raw/883a08e21ff297097598fbfc58eda610b901123c/explosives.csv"
 var url3 = "https://gist.githubusercontent.com/haoshuai999/61480128cffc7a68391aea03b7a54f6e/raw/13de4768250360561e6668a87775eb15e06eda6f/firearms.csv"
@@ -504,16 +566,16 @@ function handleStepEnter(response) {
 	//console.log(response)
 	// response = { element, direction, index }
 	// add color to current step only
-	step.classed('is-active', function (d, i) {
-		return i === response.index;
-	})
+	// step.classed('is-active', function (d, i) {
+	// 	return i === response.index;
+	// })
 	// step2.classed('is-active', function (d, i) {
 	// 	return i === response.index;
 	// })
 
 	// update graphic based on step
-	figure1.select('p').text(response.index);
-	figure2.select('p').text(response.index);
+	// figure1.select('p').text(response.index);
+	//figure2.select('p').text(response.index);
 
 	//console.log(response.index)
 	if (response.direction == 'down' && response.index < 5){
@@ -580,49 +642,38 @@ function handleStepEnter(response) {
 		changebubblechart(response.index);
 	}
 	else if (response.direction == 'down' && response.index == 11){
+		d3.select('.sticky2 svg').remove();
 		d3.select('.sticky1 svg').remove();
-		d3.select('.tooltip').remove();
-		showbubblechart(11);
+		showlinechart(url0);
 	}
 	else if (response.direction == 'up' && response.index == 11){
-		d3.select('.sticky1 svg').remove();
-		d3.select('.tooltip').remove();
-		showbubblechart(11);
-	}
-	else if (response.direction == 'down' && response.index == 12){
-		d3.select('.sticky2 svg').remove();
-		d3.select('.sticky1 svg').remove();
-		showlinechart(url0);
-	}
-	else if (response.direction == 'up' && response.index == 12){
 		d3.select('.sticky2 svg').remove();
 		showlinechart(url0);
+	}
+	else if (response.direction == 'down' && response.index == 12) {
+		d3.select('.sticky2 svg').remove();
+		showlinechart(url1);
+	}
+	else if (response.direction == 'up' && response.index == 12) {
+		d3.select('.sticky2 svg').remove();
+		showlinechart(url1);
 	}
 	else if (response.direction == 'down' && response.index == 13) {
 		d3.select('.sticky2 svg').remove();
-		showlinechart(url1);
+		showlinechart(url2);
 	}
 	else if (response.direction == 'up' && response.index == 13) {
 		d3.select('.sticky2 svg').remove();
-		showlinechart(url1);
+		showlinechart(url2);
 	}
 	else if (response.direction == 'down' && response.index == 14) {
 		d3.select('.sticky2 svg').remove();
-		showlinechart(url2);
+		showlinechart(url3);
 	}
 	else if (response.direction == 'up' && response.index == 14) {
 		d3.select('.sticky2 svg').remove();
-		showlinechart(url2);
-	}
-	else if (response.direction == 'down' && response.index == 15) {
-		d3.select('.sticky2 svg').remove();
 		showlinechart(url3);
 	}
-	else if (response.direction == 'up' && response.index == 15) {
-		d3.select('.sticky2 svg').remove();
-		showlinechart(url3);
-	}
-
 }
 
 function setupStickyfill() {

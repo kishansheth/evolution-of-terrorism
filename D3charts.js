@@ -336,85 +336,35 @@ function animatelines(){
 			 
 };
 
-function showbubblechart(slide){
-	
+var Data_url = 'https://gist.githubusercontent.com/kishansheth/8e8b21acf9017aeb2cf3fff7c0682f8e/raw/de604427f0cb5a3e10a3f65be4db27de8d9e0f21/scatterplot_data.json';
+
+function changebubblechart(slide) {
 	var w = 1000,
 	h = 500,
 	pad = 40,
-	left_pad = 250,
-	Data_url = '/data.json';
+	left_pad = 250;
 
-	var svg = d3.select(".sticky1")
-			.append("svg")
-			.attr("width", w)
-			.attr("height", h);
-	 
-	var x = d3.scale.linear().domain([0, 47]).range([left_pad, w-pad]),
-		y = d3.scale.linear().domain([0, 12]).range([pad, h-pad*2]);
-	 
-	var xAxis = d3.svg.axis().scale(x).orient("bottom")
-			.ticks(48)
-			.tickFormat(function (d, i) {
-				return d+1970;
-			})
-		yAxis = d3.svg.axis().scale(y).orient("left")
-			.ticks(12)
-			.tickFormat(function (d, i) {
-				return ['North America', 'Central America & Caribbean', 'South America', 'East Asia', 'Southeast Asia', 'South Asia', 'Central Asia', 'Western Europe', 'Eastern Europe', 'Middle East & North Africa', 'Sub-Saharan Africa', 'Australasia & Oceania'][d];
-			});
+	var svg = d3.select(".sticky1 svg");
 
 	// Define the div for the tooltip
 	var div = d3.select("body").append("div")	
 		.attr("class", "tooltip")				
 		.style("opacity", 0);
 
-
-	svg.append("g")
-		.attr("class", "axis")
-		.attr("transform", "translate(0, "+(h-pad-40)+")")
-		.call(xAxis)
-		.transition()
-		.duration(1000)
-	.selectAll("text")
-		.attr("transform", "rotate(90)translate(25,-13)")
-		.style("fill", "#aaa");
-	 
-	svg.append("g")
-		.attr("class", "axis")
-		.attr("transform", "translate("+(left_pad-pad)+", 0)")
-		.call(yAxis)
-		.transition()
-		.duration(1000)
-	.selectAll("text")
-		.style("fill", "#aaa");
-	 
-	svg.append("text")
-		.attr("class", "loading")
-		.text("Loading ...")
-		.attr("x", function () { return w/2; })
-		.attr("y", function () { return h/2-5; });
-	 
-	d3.json('https://gist.githubusercontent.com/kishansheth/8e8b21acf9017aeb2cf3fff7c0682f8e/raw/de604427f0cb5a3e10a3f65be4db27de8d9e0f21/scatterplot_data.json', function (punchcard_data) {
+	d3.json(Data_url, function (punchcard_data) {
+		var x = d3.scale.linear().domain([0, 47]).range([left_pad, w-pad]),
+		y = d3.scale.linear().domain([0, 12]).range([pad, h-pad*2]);
+		
 		var max_r = d3.max(punchcard_data.map(
-						   function (d) { return d[2]; })),
+						function (d) { return d[2]; })),
 			r = d3.scale.linear()
 				.domain([0, d3.max(punchcard_data, function (d) { return d[2]; })])
 				.range([1.5, 30]);
-	 
-		svg.selectAll(".loading").remove();
-	 
-		var dots = svg.selectAll("circle")
+
+			var dots = svg.selectAll(".circle")
 			.data(punchcard_data)
-			.enter()
-			.append("circle")
-			.attr("class", "circle")
-			// .style("fill", function(d) { return "black"/*regionColors[d[0]]*/; })
-			.attr("cx", function (d) { 
-				return x( parseInt(d[1]) + ((parseInt(d[1].substring(5, 7))-1)/12) /*+ (parseInt(d[1].substring(8, 9))/31)*/ - 1970 );
-			})
-			.attr("cy", function (d) { return y(d[0] - 1); })
-			.attr("r", function (d) { return r(d[2]); })
 			.style('fill', function (d) {
+				console.log(slide)
 				if (slide == 5) {
 					return "red";
 				}
@@ -452,14 +402,9 @@ function showbubblechart(slide){
 				// else if () {}
 				// else if () {}
 				// else {}
-			})
-			.style('opacity', 0);
+			});
 
-		dots.transition()
-			.duration(1000)
-			.style('opacity', 1);
-		
-		dots.on("mouseover", function(d, i) {		
+			dots.on("mouseover", function(d, i) {		
 				d3.select(this).style({
 					stroke: "white"
 					});
@@ -477,12 +422,105 @@ function showbubblechart(slide){
 			.on("mouseout", function(d, i) {
 				d3.select(this).style({
 					stroke: "#555"
-				  });		
+				});		
 				div.transition()		
 					.duration(500)		
 					.style("opacity", 0);	
 			});
+
+			// .style('opacity', 1);
+
+		// dots.transition()
+		// 	.duration(1000)
+		// 	.style('opacity', 1);
 	});
+}
+
+function showbubblechart(slide){
+	
+	var w = 1000,
+	h = 500,
+	pad = 40,
+	left_pad = 250;
+
+	var svg = d3.select(".sticky1")
+			.append("svg")
+			.attr("width", w)
+			.attr("height", h);
+	 
+	var x = d3.scale.linear().domain([0, 47]).range([left_pad, w-pad]),
+		y = d3.scale.linear().domain([0, 12]).range([pad, h-pad*2]);
+	 
+	var xAxis = d3.svg.axis().scale(x).orient("bottom")
+			.ticks(48)
+			.tickFormat(function (d, i) {
+				return d+1970;
+			})
+		yAxis = d3.svg.axis().scale(y).orient("left")
+			.ticks(12)
+			.tickFormat(function (d, i) {
+				return ['North America', 'Central America & Caribbean', 'South America', 'East Asia', 'Southeast Asia', 'South Asia', 'Central Asia', 'Western Europe', 'Eastern Europe', 'Middle East & North Africa', 'Sub-Saharan Africa', 'Australasia & Oceania'][d];
+			});
+
+
+	svg.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate(0, "+(h-pad-40)+")")
+		.call(xAxis)
+		// .transition()
+		// .duration(1000)
+	.selectAll("text")
+		.attr("transform", "rotate(90)translate(25,-13)")
+		.style("fill", "#aaa");
+	 
+	svg.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate("+(left_pad-pad)+", 0)")
+		.call(yAxis)
+		// .transition()
+		// .duration(1000)
+	.selectAll("text")
+		.style("fill", "#aaa");
+	 
+	svg.append("text")
+		.attr("class", "loading")
+		.text("Loading ...")
+		.attr("x", function () { return w/2; })
+		.attr("y", function () { return h/2-5; });
+	
+	var x = d3.scale.linear().domain([0, 47]).range([left_pad, w-pad]),
+	y = d3.scale.linear().domain([0, 12]).range([pad, h-pad*2]);
+	
+	d3.json(Data_url, function (punchcard_data) {
+		var max_r = d3.max(punchcard_data.map(
+						function (d) { return d[2]; })),
+			r = d3.scale.linear()
+				.domain([0, d3.max(punchcard_data, function (d) { return d[2]; })])
+				.range([1.5, 30]);
+
+		svg.selectAll(".loading").remove();
+
+
+
+		var dots = svg.selectAll("circle")
+			.data(punchcard_data)
+			.enter()
+			.append("circle")
+			.attr("class", "circle")
+			// .style("fill", function(d) { return "black"/*regionColors[d[0]]*/; })
+			.attr("cx", function (d) { 
+				return x( parseInt(d[1]) + ((parseInt(d[1].substring(5, 7))-1)/12) /*+ (parseInt(d[1].substring(8, 9))/31)*/ - 1970 );
+			})
+			.attr("cy", function (d) { return y(d[0] - 1); })
+			.attr("r", function (d) { return r(d[2]); })
+
+			// dots.transition()
+			// 	.duration(1000)
+			// 	.style('opacity', 1);
+			
+			
+	});
+	
 }
 
 // using d3 for convenience
@@ -563,65 +601,57 @@ function handleStepEnter(response) {
 	else if (response.direction == 'down' && response.index == 5){
 		d3.select('.sticky1 svg').remove();
 		d3.select('.tooltip').remove();
-		showbubblechart(5);
+		showbubblechart();
+		changebubblechart(response.index);
 	}
 	else if (response.direction == 'up' && response.index == 5){
-		d3.select('.sticky1 svg').remove();
 		d3.select('.tooltip').remove();
-		showbubblechart(5);
+		changebubblechart(response.index);
 	}
 	else if (response.direction == 'down' && response.index == 6){
-		d3.select('.sticky1 svg').remove();
 		d3.select('.tooltip').remove();
-		showbubblechart(6);
+		changebubblechart(response.index);
 	}
 	else if (response.direction == 'up' && response.index == 6){
-		d3.select('.sticky1 svg').remove();
 		d3.select('.tooltip').remove();
-		showbubblechart(6);
+		changebubblechart(response.index);
 	}
 	else if (response.direction == 'down' && response.index == 7){
-		d3.select('.sticky1 svg').remove();
 		d3.select('.tooltip').remove();
-		showbubblechart(7);
+		changebubblechart(response.index);
 	}
 	else if (response.direction == 'up' && response.index == 7){
-		d3.select('.sticky1 svg').remove();
 		d3.select('.tooltip').remove();
-		showbubblechart(7);
+		changebubblechart(response.index);
 	}
 	else if (response.direction == 'down' && response.index == 8){
-		d3.select('.sticky1 svg').remove();
 		d3.select('.tooltip').remove();
-		showbubblechart(8);
+		changebubblechart(response.index);
 	}
 	else if (response.direction == 'up' && response.index == 8){
-		d3.select('.sticky1 svg').remove();
 		d3.select('.tooltip').remove();
-		showbubblechart(8);
+		changebubblechart(response.index);
 	}
 	else if (response.direction == 'down' && response.index == 9){
-		d3.select('.sticky1 svg').remove();
 		d3.select('.tooltip').remove();
-		showbubblechart(9);
+		changebubblechart(response.index);
 	}
 	else if (response.direction == 'up' && response.index == 9){
-		d3.select('.sticky1 svg').remove();
 		d3.select('.tooltip').remove();
-		showbubblechart(9);
+		changebubblechart(response.index);
 	}
 	else if (response.direction == 'down' && response.index == 10){
-		d3.select('.sticky1 svg').remove();
 		d3.select('.tooltip').remove();
-		showbubblechart(10);
+		changebubblechart(response.index);
 	}
 	else if (response.direction == 'up' && response.index == 10){
-		d3.select('.sticky1 svg').remove();
 		d3.select('.tooltip').remove();
-		showbubblechart(10);
+		showbubblechart();
+		changebubblechart(response.index);
 	}
 	else if (response.direction == 'down' && response.index == 11){
 		d3.select('.sticky2 svg').remove();
+		d3.select('.sticky1 svg').remove();
 		showlinechart(url0);
 	}
 	else if (response.direction == 'up' && response.index == 11){

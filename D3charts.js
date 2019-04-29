@@ -95,12 +95,14 @@ function worldmap(decade){
 	d3.json("https://gist.githubusercontent.com/haoshuai999/6648576cf22f9696805bd0436c6bd0fe/raw/0a9598b48a4314b2e53b29e0e434c14dc993c235/worldrough.geo.json", function(data) {
 		var attacks = processcsv(data.features,decade)
 
-		setTimeout(function(){
-			g.selectAll("path").data(data.features)
-			.enter().append("path")
-			.attr("d", path)
-			.attr('vector-effect', 'non-scaling-stroke')
-		}, 200)
+
+		g.selectAll("path").data(data.features)
+		.enter().append("path")
+		.transition()
+		.duration(300)
+		.attr("d", path)
+		.attr('vector-effect', 'non-scaling-stroke')
+
 	  
 	});
 
@@ -108,6 +110,8 @@ function worldmap(decade){
 	var attach_num = ["No records","0-100","100-1000","1000-2000","2000-5000",">5000"]
 
 	svg.append('text')
+		.transition()
+		.duration(600)
         .attr("x", width * 0.02)
         .attr("y", 20)
         .text("Number of Attacks:")
@@ -116,6 +120,8 @@ function worldmap(decade){
 
     for (var i = 0; i < attach_num.length; i++) {
 	    svg.append('rect')
+	    	.transition()
+			.duration(600)
 	        .attr("x", width * (0.8 - 0.12 * i))
 	        .attr("y", 10)
 	        .attr("width", 10)
@@ -127,6 +133,8 @@ function worldmap(decade){
 	        })
 	    
 	    svg.append('text')
+	    	.transition()
+			.duration(600)
 	        .attr("x", width * (0.82 - 0.12 * i))
 	        .attr("y", 20)
 	        .style("fill","#fff")
@@ -544,7 +552,7 @@ function handleStepEnter(response) {
 		d3.select('.tooltip').remove();
 		changecolor(response.index + 1);
 	}
-	else if (response.direction == 'up' && response.index == 4){
+	else if (response.direction == 'up' && response.index == 5){
 		d3.select('.sticky1 svg').remove();
 		worldmap();
 	}
@@ -663,7 +671,7 @@ function init() {
 	// 3. bind scrollama event handlers (this can be chained like below)
 	scroller.setup({
 		step: '#scrolly article .step',
-		offset: 0.40,
+		offset: 0.50,
 		// debug: true,
 	})
 		.onStepEnter(handleStepEnter)

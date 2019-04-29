@@ -159,12 +159,6 @@ iframe {
 	-ms-flex: 1;
 	flex: 1;
 }
-/*    .firstscroll{
-	display: inline-block;
-}
-.secondscroll{
-	display: inline-block;
-}*/
 
 article {
 	position: relative;
@@ -172,7 +166,12 @@ article {
 	max-width: 20rem;
 }
 
-.first, .second{
+.first{
+	display: flex;
+}
+
+.second{
+	margin-top: 50px;
 	display: flex;
 }
 

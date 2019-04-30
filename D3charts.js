@@ -451,7 +451,7 @@ function changebubblechart(slide) {
 				});		
 				div.transition()		
 					.duration(500)		
-					.style("opacity", 0);	
+					.style("opacity", 0.3);	
 			});
 
 			// .style('opacity', 1);

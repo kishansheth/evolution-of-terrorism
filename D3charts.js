@@ -358,7 +358,7 @@ function animatelines(){
 	  .delay(10*i)
 	  .ease("quad") //Try linear, quad, bounce... see other examples here - http://bl.ocks.org/hunzy/9929724
 	  .attr("stroke-dashoffset", 0)
-	  .style("stroke-width",5)
+	  .style("stroke-width",3)
 	})		 
 			 
 };
@@ -577,7 +577,7 @@ function handleResize() {
 		.style('width', scrollyWidth + 'px')
 
 	var stepH = Math.floor(window.innerHeight * 0.75);
-	var longstep = window.innerHeight * 2
+	var longstep = window.innerHeight * 2.5
 	step1.style('height', stepH + 'px');
 	step2.style('height', stepH + 'px');
 	step3.style('height', stepH + 'px');
@@ -696,7 +696,7 @@ function handleStepEnter(response) {
 		showlinechart(url2);
 	}
 	if (response.direction == 'down' && response.index == 14) {
-		d3.select('.sticky2 svg').remove();
+		d3.select('.sticky2 svg').remove();	
 		showlinechart(url3);
 	}
 	if (response.direction == 'up' && response.index == 14) {

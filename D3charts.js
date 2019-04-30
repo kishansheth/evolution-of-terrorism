@@ -179,7 +179,7 @@ function drawline(data){
 		.range([height, 0]);
 	
 	// Same for colour.
-	var color = d3.scale.ordinal().range(["#FF7F0E", "#1F77B4"]);
+	var color = d3.scale.ordinal().range(["#FF0000", "#FFFF00"]);
 	
 	//Setting x-axis up here using x scaling object
 	var xAxis = d3.svg.axis()
@@ -385,7 +385,7 @@ function changebubblechart(slide) {
 	var w = 950,
 	h = 500,
 	pad = 40,
-	left_pad = 220;
+	left_pad = 240;
 
 	var svg = d3.select(".sticky3 svg");
 
@@ -397,12 +397,6 @@ function changebubblechart(slide) {
 	d3.json(Data_url, function (punchcard_data) {
 		var x = d3.scale.linear().domain([0, 47]).range([left_pad, w-pad]),
 		y = d3.scale.linear().domain([0, 12]).range([pad, h-pad*2]);
-		
-		var max_r = d3.max(punchcard_data.map(
-						function (d) { return d[2]; })),
-			r = d3.scale.linear()
-				.domain([0, d3.max(punchcard_data, function (d) { return d[2]; })])
-				.range([1.5, 30]);
 
 			var dots = svg.selectAll(".circle")
 			.data(punchcard_data)
@@ -483,7 +477,7 @@ function showbubblechart(slide){
 	var w = 950,
 	h = 500,
 	pad = 40,
-	left_pad = 220;
+	left_pad = 240;
 
 	var svg = d3.select(".sticky3")
 			.append("svg")
@@ -492,13 +486,18 @@ function showbubblechart(slide){
 			.append("g")
     		.attr("transform", "translate(0,40)");
 	 
-	var x = d3.scale.linear().domain([0, 47]).range([left_pad, w-pad]),
+	var x = d3.scale.linear().domain([0, 48]).range([left_pad, w-pad]),
 		y = d3.scale.linear().domain([0, 12]).range([pad, h-pad*2]);
 	 
 	var xAxis = d3.svg.axis().scale(x).orient("bottom")
-			.ticks(48)
+			.ticks(49)
 			.tickFormat(function (d, i) {
-				return d+1970;
+				if (d%5 == 0) {
+					return d+1970;
+				}
+				else {
+					return "";
+				}
 			})
 		yAxis = d3.svg.axis().scale(y).orient("left")
 			.ticks(12)
@@ -540,7 +539,6 @@ function showbubblechart(slide){
         .text("Deadliest Attacks (1970-2017)")
         .style("fill","#fff")
 	    .style("font-size","20px")
-	
 	
 	d3.json(Data_url, function (punchcard_data) {
 		var max_r = d3.max(punchcard_data.map(

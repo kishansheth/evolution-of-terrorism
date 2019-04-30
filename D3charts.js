@@ -358,7 +358,7 @@ function animatelines(){
 	  .delay(10*i)
 	  .ease("quad") //Try linear, quad, bounce... see other examples here - http://bl.ocks.org/hunzy/9929724
 	  .attr("stroke-dashoffset", 0)
-	  .style("stroke-width",5)
+	  .style("stroke-width",3)
 	})		 
 			 
 };

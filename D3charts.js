@@ -617,93 +617,93 @@ function handleStepEnter(response) {
 		d3.select('.tooltip').remove();
 		changecolor(response.index + 1);
 	}
-	else if (response.direction == 'up' && response.index <= 4){
+	if (response.direction == 'up' && response.index <= 4){
 		d3.select('.tooltip').remove();
 		changecolor(response.index + 1);
 	}
-	else if (response.direction == 'down' && response.index == 5){
+	if (response.direction == 'down' && response.index == 5){
 		d3.select('.sticky1 svg').remove();
 		d3.select('.sticky3 svg').remove();
 		d3.select('.tooltip').remove();
 		showbubblechart();
 		changebubblechart(response.index);
 	}
-	else if (response.direction == 'up' && response.index == 5){
+	if (response.direction == 'up' && response.index == 5){
 		d3.select('.tooltip').remove();
 		changebubblechart(response.index);
 	}
-	else if (response.direction == 'down' && response.index == 6){
+	if (response.direction == 'down' && response.index == 6){
 		d3.select('.sticky1 svg').remove();
 		d3.select('.tooltip').remove();
 		changebubblechart(response.index);
 	}
-	else if (response.direction == 'up' && response.index == 6){
+	if (response.direction == 'up' && response.index == 6){
 		d3.select('.tooltip').remove();
 		changebubblechart(response.index);
 	}
-	else if (response.direction == 'down' && response.index == 7){
+	if (response.direction == 'down' && response.index == 7){
 		d3.select('.tooltip').remove();
 		changebubblechart(response.index);
 	}
-	else if (response.direction == 'up' && response.index == 7){
+	if (response.direction == 'up' && response.index == 7){
 		d3.select('.tooltip').remove();
 		changebubblechart(response.index);
 	}
-	else if (response.direction == 'down' && response.index == 8){
+	if (response.direction == 'down' && response.index == 8){
 		d3.select('.tooltip').remove();
 		changebubblechart(response.index);
 	}
-	else if (response.direction == 'up' && response.index == 8){
+	if (response.direction == 'up' && response.index == 8){
 		d3.select('.tooltip').remove();
 		changebubblechart(response.index);
 	}
-	else if (response.direction == 'down' && response.index == 9){
+	if (response.direction == 'down' && response.index == 9){
 		d3.select('.tooltip').remove();
 		changebubblechart(response.index);
 	}
-	else if (response.direction == 'up' && response.index == 9){
+	if (response.direction == 'up' && response.index == 9){
 		d3.select('.tooltip').remove();
 		changebubblechart(response.index);
 	}
-	else if (response.direction == 'down' && response.index == 10){
+	if (response.direction == 'down' && response.index == 10){
 		d3.select('.tooltip').remove();
 		changebubblechart(response.index);
 	}
-	else if (response.direction == 'up' && response.index == 10){
+	if (response.direction == 'up' && response.index == 10){
 		d3.select('.tooltip').remove();
 		showbubblechart();
 		changebubblechart(response.index);
 	}
-	else if (response.direction == 'down' && response.index == 11){
+	if (response.direction == 'down' && response.index == 11){
 		d3.select('.sticky2 svg').remove();
 		d3.select('.sticky3 svg').remove();
 		showlinechart(url0);
 	}
-	else if (response.direction == 'up' && response.index == 11){
+	if (response.direction == 'up' && response.index == 11){
 		d3.select('.sticky2 svg').remove();
 		showlinechart(url0);
 	}
-	else if (response.direction == 'down' && response.index == 12) {
+	if (response.direction == 'down' && response.index == 12) {
 		d3.select('.sticky2 svg').remove();
 		showlinechart(url1);
 	}
-	else if (response.direction == 'up' && response.index == 12) {
+	if (response.direction == 'up' && response.index == 12) {
 		d3.select('.sticky2 svg').remove();
 		showlinechart(url1);
 	}
-	else if (response.direction == 'down' && response.index == 13) {
+	if (response.direction == 'down' && response.index == 13) {
 		d3.select('.sticky2 svg').remove();
 		showlinechart(url2);
 	}
-	else if (response.direction == 'up' && response.index == 13) {
+	if (response.direction == 'up' && response.index == 13) {
 		d3.select('.sticky2 svg').remove();
 		showlinechart(url2);
 	}
-	else if (response.direction == 'down' && response.index == 14) {
+	if (response.direction == 'down' && response.index == 14) {
 		d3.select('.sticky2 svg').remove();
 		showlinechart(url3);
 	}
-	else if (response.direction == 'up' && response.index == 14) {
+	if (response.direction == 'up' && response.index == 14) {
 		d3.select('.sticky2 svg').remove();
 		showlinechart(url3);
 	}

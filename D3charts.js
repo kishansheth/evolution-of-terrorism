@@ -170,7 +170,7 @@ function drawline(data){
 		.range([height, 0]);
 	
 	// Same for colour.
-	var color = d3.scale.ordinal().range(["#1F77B4", "#FF7F0E"]);
+	var color = d3.scale.ordinal().range(["#FF7F0E", "#1F77B4"]);
 	
 	//Setting x-axis up here using x scaling object
 	var xAxis = d3.svg.axis()
@@ -230,7 +230,7 @@ function drawline(data){
 	  // Bind the x-axis to the svg object
 	  svg.append("g")
 		  .attr("class", "x axis")
-		  .style("fill", "#fff")
+		  .style("fill", "#aaa")
 		  .attr("transform", "translate(0," + height + ")")
 		  .call(xAxis)
 		.append("text") 
@@ -238,13 +238,13 @@ function drawline(data){
 		  .attr("x", width/2 ) //place the year label in the middle of the axis
 		  .attr("dx", ".71em") 
 		  .style("text-anchor", "end")
-		  .style("fill", "#fff")
+		  .style("fill", "#aaa")
 		  .text("Year");
 	
 		// append the yAxis and add label as before.
 	  svg.append("g")
 		  .attr("class", "y axis")
-		  .style("fill", "#fff")
+		  .style("fill", "#aaa")
 		  .attr("id", "#yAxis")
 		  .call(yAxis)
 		.append("text")
@@ -252,12 +252,14 @@ function drawline(data){
 		  .attr("x", 0)
 		  .attr("dy", ".71em")
 		  .style("text-anchor", "start")
-		  .style("fill", "#fff")
+		  .style("fill", "#aaa")
 		  .text("Percentage");
 	  
 		  //draw the legend
-        for (var i = 0; i < projections.length; i++) {
+	if(projections.length == 2){
+		for (var i = 0; i < projections.length; i++) {
 	        svg.append('rect')
+	        	.data(projections)
 	            .attr("x", width * (0.8 - 0.22 * i))
 	            .attr("y", -10)
 	            .attr("width", 10)
@@ -269,13 +271,35 @@ function drawline(data){
 	        svg.append('text')
 	            .attr("x", width * (0.82 - 0.22 * i))
 	            .attr("y", 0)
-	            .style("fill","#fff")
+	            .style("fill","#aaa")
 	            .style("font-size","10px")
 	        //.attr("dy", ".35em")
 		        .text(function (d) {
 		            return projections[i].name
 		        })
         }
+	}
+    else if(projections.length == 1){
+    	svg.append('rect')
+	        	.data(projections)
+	            .attr("x", width * 0.8)
+	            .attr("y", -10)
+	            .attr("width", 10)
+	            .attr("height", 10)
+	            .style("fill", function (d,i) {
+		            return color(d.name)
+		        })
+	        
+	        svg.append('text')
+	            .attr("x", width * 0.82)
+	            .attr("y", 0)
+	            .style("fill","#aaa")
+	            .style("font-size","10px")
+	        //.attr("dy", ".35em")
+		        .text(function (d) {
+		            return projections[0].name
+		        })
+    }   
 
 
 		//create proj
@@ -314,7 +338,7 @@ function showlinechart(url){
 };
 function animatelines(){
 
-	d3.selectAll(".line").style("opacity","0.5");
+	d3.selectAll(".line").style("opacity","0.9");
 
 	
 	//Select All of the lines and process them one by one
@@ -334,7 +358,7 @@ function animatelines(){
 	  .delay(10*i)
 	  .ease("quad") //Try linear, quad, bounce... see other examples here - http://bl.ocks.org/hunzy/9929724
 	  .attr("stroke-dashoffset", 0)
-	  .style("stroke-width",3)
+	  .style("stroke-width",5)
 	})		 
 			 
 };

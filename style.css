@@ -16,17 +16,12 @@ body {
 	font-size: 24px;
 }
 
-p,
-h1,
-h2,
-h3,
-h4,
 a {
 	margin: 0;
 	font-weight: 400;
 }
 
-h2, h4 {
+h2, h3, h4 {
 	margin: 20px 0px;
 }
 
@@ -170,7 +165,7 @@ article {
 	display: flex;
 }
 
-.second{
+.third, .second{
 	margin-top: 50px;
 	display: flex;
 }
@@ -296,4 +291,12 @@ div.tooltip {
     border: 1px solid white;
     border-radius: 3px;			
     pointer-events: none;			
+}
+
+.transition{
+	padding-left: 100px;
+	padding-right: 100px;
+	color: white;
+	margin-top: 300px;
+	margin-bottom: 300px;
 }

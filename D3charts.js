@@ -46,13 +46,16 @@ function changecolor(decade){
 				}
 			}
 			d3.select(".sticky1").selectAll("path")
+				.transition()		
+				.duration(200)
 				.attr("fill", function(data,i) {
 					return colorfill[i]
 				})
-				.attr("stroke", "white")
+
+			d3.select(".sticky1").selectAll("path")
 				.on("mouseover",function(d,i){
 					div.transition()		
-						.duration(200)		
+						.duration(250)		
 						.style("opacity", .9);		
 					div.html(data.features[i].properties.name + ": " + num_of_attack[i])	
 						.style("left", (d3.event.pageX) + "px")		
@@ -67,7 +70,7 @@ function changecolor(decade){
 	})
 }
 function worldmap(decade){
-	var width = 1000,
+	var width = 950,
 		  height = 600;
 
 	var svg = d3.select(".sticky1").append("svg")
@@ -99,10 +102,10 @@ function worldmap(decade){
 		g.selectAll("path").data(data.features)
 		.enter().append("path")
 		.transition()
-		.duration(300)
+		.duration(200)
 		.attr("d", path)
 		.attr('vector-effect', 'non-scaling-stroke')
-
+		.attr("stroke", "white")
 	  
 	});
 
@@ -339,12 +342,12 @@ function animatelines(){
 var Data_url = 'https://gist.githubusercontent.com/kishansheth/8e8b21acf9017aeb2cf3fff7c0682f8e/raw/de604427f0cb5a3e10a3f65be4db27de8d9e0f21/scatterplot_data.json';
 
 function changebubblechart(slide) {
-	var w = 1000,
+	var w = 950,
 	h = 500,
 	pad = 40,
-	left_pad = 250;
+	left_pad = 220;
 
-	var svg = d3.select(".sticky1 svg");
+	var svg = d3.select(".sticky3 svg");
 
 	// Define the div for the tooltip
 	var div = d3.select("body").append("div")	
@@ -364,7 +367,6 @@ function changebubblechart(slide) {
 			var dots = svg.selectAll(".circle")
 			.data(punchcard_data)
 			.style('fill', function (d) {
-				console.log(slide)
 				if (slide == 5) {
 					return "red";
 				}
@@ -438,12 +440,12 @@ function changebubblechart(slide) {
 
 function showbubblechart(slide){
 	
-	var w = 1000,
+	var w = 950,
 	h = 500,
 	pad = 40,
-	left_pad = 250;
+	left_pad = 220;
 
-	var svg = d3.select(".sticky1")
+	var svg = d3.select(".sticky3")
 			.append("svg")
 			.attr("width", w)
 			.attr("height", h);
@@ -467,8 +469,8 @@ function showbubblechart(slide){
 		.attr("class", "axis")
 		.attr("transform", "translate(0, "+(h-pad-40)+")")
 		.call(xAxis)
-		// .transition()
-		// .duration(1000)
+		.transition()
+		.duration(1000)
 	.selectAll("text")
 		.attr("transform", "rotate(90)translate(25,-13)")
 		.style("fill", "#aaa");
@@ -477,8 +479,8 @@ function showbubblechart(slide){
 		.attr("class", "axis")
 		.attr("transform", "translate("+(left_pad-pad)+", 0)")
 		.call(yAxis)
-		// .transition()
-		// .duration(1000)
+		.transition()
+		.duration(1000)
 	.selectAll("text")
 		.style("fill", "#aaa");
 	 
@@ -514,9 +516,9 @@ function showbubblechart(slide){
 			.attr("cy", function (d) { return y(d[0] - 1); })
 			.attr("r", function (d) { return r(d[2]); })
 
-			// dots.transition()
-			// 	.duration(1000)
-			// 	.style('opacity', 1);
+			dots.transition()
+				.duration(500)
+				.style('opacity', 1);
 			
 			
 	});
@@ -528,10 +530,14 @@ var main = d3.select('main');
 var scrolly = main.select('#scrolly');
 var figure1 = scrolly.select('.sticky1');
 var figure2 = scrolly.select('.sticky2');
+var figure3 = scrolly.select('.sticky3');
 var article1 = scrolly.select('.scroll1');
 var article2 = scrolly.select('.scroll2');
+var article3 = scrolly.select('.scroll3');
 var step1 = article1.selectAll('.step');
 var step2 = article2.selectAll('.step');
+var step3 = article3.selectAll('.step');
+var prelong = article3.selectAll('.prelong');
 var step = scrolly.selectAll('.step');
 var url0 = "https://gist.githubusercontent.com/haoshuai999/dbe67bcac6101074962a2de18298466c/raw/1198a8db6eab55799c628ab2519725be5ac55fbf/data.csv"
 var url1 = "https://gist.githubusercontent.com/haoshuai999/cfb02118786cf52476da5d0983e3ebe6/raw/bc6d825ef2e71d3559ae23023d387bd896ddf1c8/allweapons.csv"
@@ -551,8 +557,11 @@ function handleResize() {
 		.style('width', scrollyWidth + 'px')
 
 	var stepH = Math.floor(window.innerHeight * 0.75);
+	var longstep = window.innerHeight * 2
 	step1.style('height', stepH + 'px');
 	step2.style('height', stepH + 'px');
+	step3.style('height', stepH + 'px');
+	prelong.style('height', longstep + 'px');
 
 	var figureHeight = window.innerHeight / 1.2
 	var figureMarginTop = (window.innerHeight - figureHeight) / 2  
@@ -565,41 +574,29 @@ function handleResize() {
 		.style('height', figureHeight + 'px')
 		.style('top', figureMarginTop + 'px');
 
+	figure3
+		.style('height', figureHeight + 'px')
+		.style('top', figureMarginTop + 'px');
+
 	// 3. tell scrollama to update new element dimensions
 	scroller.resize();
 }
 
 // scrollama event handlers
 function handleStepEnter(response) {
-	//console.log(response)
-	// response = { element, direction, index }
-	// add color to current step only
-	// step.classed('is-active', function (d, i) {
-	// 	return i === response.index;
-	// })
-	// step2.classed('is-active', function (d, i) {
-	// 	return i === response.index;
-	// })
 
-	// update graphic based on step
-	// figure1.select('p').text(response.index);
-	//figure2.select('p').text(response.index);
-
-	//console.log(response.index)
-	if (response.direction == 'down' && response.index < 5){
+	if (response.direction == 'down' && response.index <= 4){
 		d3.select('.tooltip').remove();
 		changecolor(response.index + 1);
 	}
-	else if (response.direction == 'up' && response.index == 5){
-		d3.select('.sticky1 svg').remove();
-		worldmap();
-	}
-	else if (response.direction == 'up' && response.index < 5){
+	else if (response.direction == 'up' && response.index <= 4){
 		d3.select('.tooltip').remove();
+		worldmap();
 		changecolor(response.index + 1);
 	}
 	else if (response.direction == 'down' && response.index == 5){
 		d3.select('.sticky1 svg').remove();
+		d3.select('.sticky3 svg').remove();
 		d3.select('.tooltip').remove();
 		showbubblechart();
 		changebubblechart(response.index);
@@ -609,6 +606,7 @@ function handleStepEnter(response) {
 		changebubblechart(response.index);
 	}
 	else if (response.direction == 'down' && response.index == 6){
+		d3.select('.sticky1 svg').remove();
 		d3.select('.tooltip').remove();
 		changebubblechart(response.index);
 	}
@@ -651,7 +649,7 @@ function handleStepEnter(response) {
 	}
 	else if (response.direction == 'down' && response.index == 11){
 		d3.select('.sticky2 svg').remove();
-		d3.select('.sticky1 svg').remove();
+		d3.select('.sticky3 svg').remove();
 		showlinechart(url0);
 	}
 	else if (response.direction == 'up' && response.index == 11){
@@ -701,8 +699,8 @@ function init() {
 	// 3. bind scrollama event handlers (this can be chained like below)
 	scroller.setup({
 		step: '#scrolly article .step',
-		offset: 0.50,
-		// debug: true,
+		offset: 0.5,
+		//debug: true,
 	})
 		.onStepEnter(handleStepEnter)
 

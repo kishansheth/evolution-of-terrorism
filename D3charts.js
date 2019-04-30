@@ -609,13 +609,16 @@ function handleResize() {
 // scrollama event handlers
 function handleStepEnter(response) {
 
+	if (response.direction == 'up' && response.index == 4){
+		d3.select('.sticky1 svg').remove();
+		worldmap();
+	}
 	if (response.direction == 'down' && response.index <= 4){
 		d3.select('.tooltip').remove();
 		changecolor(response.index + 1);
 	}
 	else if (response.direction == 'up' && response.index <= 4){
 		d3.select('.tooltip').remove();
-		worldmap();
 		changecolor(response.index + 1);
 	}
 	else if (response.direction == 'down' && response.index == 5){

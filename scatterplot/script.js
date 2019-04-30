@@ -15,7 +15,9 @@ var x = d3.scale.linear().domain([0, 47]).range([left_pad, w-pad]),
 var xAxis = d3.svg.axis().scale(x).orient("bottom")
         .ticks(48)
         .tickFormat(function (d, i) {
-            return d+1970;
+            if (d%5 == 0) {
+                return d+1970;
+            }
         })
     yAxis = d3.svg.axis().scale(y).orient("left")
         .ticks(12)

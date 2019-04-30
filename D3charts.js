@@ -71,7 +71,7 @@ function changecolor(decade){
 }
 function worldmap(decade){
 	var width = 950,
-		  height = 600;
+		height = 700;
 
 	var svg = d3.select(".sticky1").append("svg")
 	  .attr("width", width)
@@ -86,9 +86,9 @@ function worldmap(decade){
 	var g = svg.append('g');
 
 	var xym = d3.geo.equirectangular()
-						.center([10,31])
+						.center([10,41])
 						.scale(150)
-						.translate([width/2, height/3]);
+						.translate([width/2, (height-100)/3]);
 	var path = d3.geo.path().projection(xym);
 
 	// Customize the projection to make the center of Thailand become the center of the map
@@ -115,8 +115,17 @@ function worldmap(decade){
 	svg.append('text')
 		.transition()
 		.duration(600)
+        .attr("x", width * 0.25)
+        .attr("y", 30)
+        .text("Timeline of attacks (1970-2017)")
+        .style("fill","#fff")
+	    .style("font-size","20px")
+
+	svg.append('text')
+		.transition()
+		.duration(600)
         .attr("x", width * 0.02)
-        .attr("y", 20)
+        .attr("y", 70)
         .text("Number of Attacks:")
         .style("fill","#fff")
 	    .style("font-size","10px")
@@ -126,7 +135,7 @@ function worldmap(decade){
 	    	.transition()
 			.duration(600)
 	        .attr("x", width * (0.8 - 0.12 * i))
-	        .attr("y", 10)
+	        .attr("y", 60)
 	        .attr("width", 10)
 	        .attr("height", 10)
 	        .style("stroke","white")
@@ -139,7 +148,7 @@ function worldmap(decade){
 	    	.transition()
 			.duration(600)
 	        .attr("x", width * (0.82 - 0.12 * i))
-	        .attr("y", 20)
+	        .attr("y", 70)
 	        .style("fill","#fff")
 	        .style("font-size","10px")
 	    //.attr("dy", ".35em")
@@ -154,7 +163,7 @@ function drawline(data){
 	var chartwidth = parseInt(d3.select(".sticky2").style("width")) * 0.9;
 	
 	// Set the margins
-	var margin = {top: 20, right: 15, bottom: 60, left: 100},
+	var margin = {top: 60, right: 15, bottom: 60, left: 100},
 		width = chartwidth - margin.left - margin.right,
 		height = 500 - margin.top - margin.bottom;
 	
@@ -198,7 +207,15 @@ function drawline(data){
 	  .append("g") 
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 	
-	 
+	 svg.append('text')
+		.transition()
+		.duration(600)
+        .attr("x", width * 0.3)
+        .attr("y", -40)
+        .text("Deadliest Attacks (1970-2017)")
+        .style("fill","#fff")
+	    .style("font-size","20px")
+
 	  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
 			  
 	  // Take each row and put the date column through the parsedate form we've defined above.	
@@ -282,7 +299,7 @@ function drawline(data){
     else if(projections.length == 1){
     	svg.append('rect')
 	        	.data(projections)
-	            .attr("x", width * 0.8)
+	            .attr("x", width * 0.75)
 	            .attr("y", -10)
 	            .attr("width", 10)
 	            .attr("height", 10)
@@ -291,7 +308,7 @@ function drawline(data){
 		        })
 	        
 	        svg.append('text')
-	            .attr("x", width * 0.82)
+	            .attr("x", width * 0.77)
 	            .attr("y", 0)
 	            .style("fill","#aaa")
 	            .style("font-size","10px")
@@ -348,7 +365,6 @@ function animatelines(){
 
 	var totalLength = d3.select("#line" + i).node().getTotalLength();
 
-	
 
 	d3.selectAll("#line" + i)
 	  .attr("stroke-dasharray", totalLength + " " + totalLength)
@@ -451,7 +467,7 @@ function changebubblechart(slide) {
 				});		
 				div.transition()		
 					.duration(500)		
-					.style("opacity", 0.3);	
+					.style("opacity", 0);	
 			});
 
 			// .style('opacity', 1);
@@ -472,7 +488,9 @@ function showbubblechart(slide){
 	var svg = d3.select(".sticky3")
 			.append("svg")
 			.attr("width", w)
-			.attr("height", h);
+			.attr("height", h)
+			.append("g")
+    		.attr("transform", "translate(0,40)");
 	 
 	var x = d3.scale.linear().domain([0, 47]).range([left_pad, w-pad]),
 		y = d3.scale.linear().domain([0, 12]).range([pad, h-pad*2]);
@@ -513,9 +531,16 @@ function showbubblechart(slide){
 		.text("Loading ...")
 		.attr("x", function () { return w/2; })
 		.attr("y", function () { return h/2-5; });
+
+	svg.append('text')
+		.transition()
+		.duration(600)
+        .attr("x", w * 0.3)
+        .attr("y", -20)
+        .text("Deadliest Attacks (1970-2017)")
+        .style("fill","#fff")
+	    .style("font-size","20px")
 	
-	var x = d3.scale.linear().domain([0, 47]).range([left_pad, w-pad]),
-	y = d3.scale.linear().domain([0, 12]).range([pad, h-pad*2]);
 	
 	d3.json(Data_url, function (punchcard_data) {
 		var max_r = d3.max(punchcard_data.map(
@@ -564,9 +589,9 @@ var step3 = article3.selectAll('.step');
 var prelong = article3.selectAll('.prelong');
 var step = scrolly.selectAll('.step');
 var url0 = "https://gist.githubusercontent.com/haoshuai999/dbe67bcac6101074962a2de18298466c/raw/1198a8db6eab55799c628ab2519725be5ac55fbf/data.csv"
-var url1 = "https://gist.githubusercontent.com/haoshuai999/cfb02118786cf52476da5d0983e3ebe6/raw/bc6d825ef2e71d3559ae23023d387bd896ddf1c8/allweapons.csv"
-var url2 = "https://gist.githubusercontent.com/haoshuai999/61390fedd6e351449d70b2a8b6dc7ace/raw/883a08e21ff297097598fbfc58eda610b901123c/explosives.csv"
-var url3 = "https://gist.githubusercontent.com/haoshuai999/61480128cffc7a68391aea03b7a54f6e/raw/13de4768250360561e6668a87775eb15e06eda6f/firearms.csv"
+var url1 = "https://gist.githubusercontent.com/haoshuai999/cfb02118786cf52476da5d0983e3ebe6/raw/c27f22fad874cfa93175a6ad1df48e0f070f28c4/allweapons.csv"
+var url2 = "https://gist.githubusercontent.com/haoshuai999/61390fedd6e351449d70b2a8b6dc7ace/raw/4ffccc0931a80863c604afc6ceb3a24fff7e3016/explosives.csv"
+var url3 = "https://gist.githubusercontent.com/haoshuai999/61480128cffc7a68391aea03b7a54f6e/raw/b85434e519952fa826f088df388478b52efd6d1d/firearms.csv"
 
 
 // initialize the scrollama

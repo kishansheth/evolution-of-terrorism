@@ -117,7 +117,7 @@ function worldmap(decade){
 		.duration(600)
         .attr("x", width * 0.25)
         .attr("y", 30)
-        .text("Timeline of attacks (1970-2017)")
+		.text("Timeline of attacks (1970-2017)")
         .style("fill","#fff")
 	    .style("font-size","20px")
 
@@ -534,7 +534,7 @@ function showbubblechart(slide){
 	svg.append('text')
 		.transition()
 		.duration(600)
-        .attr("x", w * 0.3)
+        .attr("x", w * 0.4)
         .attr("y", -20)
         .text("Deadliest Attacks (1970-2017)")
         .style("fill","#fff")

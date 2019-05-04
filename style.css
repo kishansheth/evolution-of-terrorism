@@ -21,6 +21,10 @@ a {
 	font-weight: 400;
 }
 
+h1 {
+	font-size: 32px;
+}
+
 h2 {
 	margin: 20px 0px;
 }
@@ -70,8 +74,8 @@ iframe {
 }
 
 .title {
-	font-size: 2.5em;
-	font-weight: 200;
+	font-size: 2em;
+	font-weight: 400;
 	width: 100%;
 	text-align: center;
 	margin: 1rem auto;
@@ -98,7 +102,7 @@ iframe {
 
 .intro__hed {
 	color: white;
-	font-size: 2em;
+	font-size: 1.5em;
 	margin: 2rem auto 0.5rem auto;
 }
 
@@ -206,7 +210,7 @@ figure {
 	position: sticky;
 	width: 100%;
 	margin: 25px;
-	padding-top: 20px;
+	padding-top: 50px;
 	-webkit-transform: translate3d(0, 0, 0);
 	-moz-transform: translate3d(0, 0, 0);
 	transform: translate3d(0, 0, 0);
@@ -252,6 +256,11 @@ figure p {
 	padding: 1px;
 	font-size: 12px;
 }
+
+.emphasis {
+	color: red;
+}
+
 /*div.tooltip { 
 	position: absolute;     
 	text-align: center;     
@@ -325,8 +334,8 @@ div.tooltip {
 }
 
 .transition{
-	padding-top: 150px;
-	padding-bottom: 150px;
+	padding-top: 200px;
+	padding-bottom: 200px;
 	padding-left: 100px;
 	padding-right: 100px;
 	color: white;

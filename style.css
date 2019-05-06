@@ -231,7 +231,12 @@ figure p {
 	color: #fff;
 }
 
-
+#methodology {
+	padding-top: 15px;
+	color: white;
+	text-align: center;
+	font-size: 15px;
+}
 .step {
 	margin: 0 auto 2rem auto;
 	background-color: black;

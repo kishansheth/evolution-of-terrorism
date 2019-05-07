@@ -237,6 +237,9 @@ figure p {
 	text-align: center;
 	font-size: 15px;
 }
+.largeicon {
+	font-size: 20px;
+}
 .step {
 	margin: 0 auto 2rem auto;
 	background-color: black;
